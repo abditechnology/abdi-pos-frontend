@@ -55,10 +55,57 @@ export const useOutletStore = defineStore('outlet', () => {
     return false
   }
 
+  // Actions CRUD Cabang
+  const createOutlet = (data) => {
+    const newId = outlets.value.length ? Math.max(...outlets.value.map(o => o.id)) + 1 : 1
+    const newOutlet = {
+      id: newId,
+      name: data.name,
+      code: data.code || `OUT-${String(newId).padStart(2, '0')}`,
+      address: data.address || '',
+      phone: data.phone || '',
+      status: data.status || 'active',
+      isPrimary: false
+    }
+    outlets.value.push(newOutlet)
+    toast.success(`Cabang "${newOutlet.name}" berhasil ditambahkan!`, 'Cabang Baru')
+    return newOutlet
+  }
+
+  const updateOutlet = (id, data) => {
+    const index = outlets.value.findIndex(o => o.id === id)
+    if (index !== -1) {
+      outlets.value[index] = { ...outlets.value[index], ...data }
+      toast.success(`Data cabang "${outlets.value[index].name}" berhasil diperbarui.`, 'Cabang Diperbarui')
+      return true
+    }
+    return false
+  }
+
+  const deleteOutlet = (id) => {
+    if (outlets.value.length <= 1) {
+      toast.error('Tidak dapat menghapus cabang terakhir bisnis Anda.', 'Gagal Hapus')
+      return false
+    }
+    const index = outlets.value.findIndex(o => o.id === id)
+    if (index !== -1) {
+      const deleted = outlets.value.splice(index, 1)[0]
+      if (currentOutletId.value === id) {
+        currentOutletId.value = outlets.value[0].id
+      }
+      toast.info(`Cabang "${deleted.name}" telah dihapus.`, 'Cabang Dihapus')
+      return true
+    }
+    return false
+  }
+
   return {
     outlets,
     currentOutletId,
     currentOutlet,
-    switchOutlet
+    switchOutlet,
+    createOutlet,
+    updateOutlet,
+    deleteOutlet
   }
 })

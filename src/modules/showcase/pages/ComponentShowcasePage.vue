@@ -313,12 +313,43 @@
         </BaseInput>
       </div>
     </section>
+
+    <!-- SECTION 8: ANIMASI LOADING PERPINDAHAN MODE -->
+    <section class="component-section base-card card-bordered">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <h3 class="section-title">8. Animasi Loading Transisi Antar Dashboard (Tenant ⇄ Superadmin)</h3>
+          <p class="section-subtitle">
+            Transisi animatif dengan orbital ring, ambient glow, status step progress, dan tema warna dinamis ketika beralih konteks.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-4 items-center">
+        <BaseButton
+          variant="primary"
+          @click="testTransitionToSuperadmin"
+        >
+          <template #icon><AppIcon name="shield" :size="16" /></template>
+          Uji Animasi: Menuju Superadmin (SaaS Owner)
+        </BaseButton>
+
+        <BaseButton
+          variant="secondary"
+          @click="testTransitionToTenant"
+        >
+          <template #icon><AppIcon name="store" :size="16" /></template>
+          Uji Animasi: Menuju Dashboard Toko (Tenant)
+        </BaseButton>
+      </div>
+    </section>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { useToast } from '../../../shared/composables/useToast'
+import { useModeTransitionStore } from '../../../shared/stores/modeTransitionStore'
 
 import BaseButton from '../../../shared/components/ui/BaseButton.vue'
 import BaseModal from '../../../shared/components/ui/BaseModal.vue'
@@ -379,6 +410,16 @@ const handleConfirmWarningAction = () => {
     isConfirmWarningOpen.value = false
     toast.success('Shift kasir berhasil ditutup. Laporan terkirim ke printer.', 'Shift Ditutup')
   }, 700)
+}
+
+const modeTransitionStore = useModeTransitionStore()
+
+const testTransitionToSuperadmin = () => {
+  modeTransitionStore.startTransition('superadmin')
+}
+
+const testTransitionToTenant = () => {
+  modeTransitionStore.startTransition('tenant')
 }
 </script>
 

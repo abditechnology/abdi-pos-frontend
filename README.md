@@ -1,6 +1,6 @@
 # 🚀 Abdi POS — Frontend Technical & Coding Documentation
 
-Dokumen ini berisi catatan teknis, standar arsitektur, panduan penulisan kode, serta dokumentasi komponen pendukung untuk seluruh pengembang (*engineers / programmers*) yang berkontribusi pada repositori `abdi-pos-frontend`.
+Dokumen ini berisi catatan teknis, standar arsitektur, panduan penulisan kode, serta dokumentasi seluruh modul dan komponen pendukung untuk seluruh pengembang (*engineers / programmers*) yang berkontribusi pada repositori `abdi-pos-frontend`.
 
 Aplikasi ini dibangun mengacu secara ketat pada spesifikasi:
 - **Acuan Utama**: `prd_frontend.md` (Frontend Technical PRD POS SaaS)
@@ -10,9 +10,9 @@ Aplikasi ini dibangun mengacu secara ketat pada spesifikasi:
 
 ## 📑 Daftar Isi
 1. [Tech Stack & Prinsip Arsitektur](#-tech-stack--prinsip-arsitektur)
-2. [Struktur Folder & Standar Penamaan](#-struktur-folder--standar-penamaan)
+2. [Struktur Folder & Seluruh Modul Frontend](#-struktur-folder--seluruh-modul-frontend)
 3. [Design System & Aturan Styling (Modern Blue)](#-design-system--aturan-styling-modern-blue)
-4. [State Management & Data Flow (Pinia & Composables)](#-state-management--data-flow)
+4. [State Management & Data Stores (Pinia)](#-state-management--data-stores-pinia)
 5. [Katalog & API Komponen Pendukung](#-katalog--api-komponen-pendukung)
 6. [Panduan Menjalankan & Build Aplikasi](#-panduan-menjalankan--build-aplikasi)
 7. [Aturan Kontribusi & Pemeliharaan Dokumen](#-aturan-kontribusi--pemeliharaan-dokumen)
@@ -25,109 +25,146 @@ Aplikasi ini dibangun mengacu secara ketat pada spesifikasi:
 |---|---|---|
 | **Framework** | Vue 3 (Composition API `<script setup>`) | Typed, modular, performa tinggi |
 | **Build Tool** | Vite 8+ | Hot Module Replacement (HMR) instan & build optimal |
-| **State Management** | Pinia 4+ | Store terpisah per domain (`auth`, `outlet`, `ui`) |
-| **Routing** | Vue Router | Nested routes, layout shells, route meta |
+| **State Management** | Pinia 4+ | Store terpisah per domain (`auth`, `outlet`, `ui`, `product`, `inventory`, `transaction`, `order`, `customer`, `promotion`, `staff`) |
+| **Routing** | Vue Router 4 | Nested routes, layout shells, meta, static imports |
 | **Typography** | Plus Jakarta Sans | Modern geometric sans-serif |
-| **Icons** | Custom Crisp SVG Component (`AppIcon.vue`) | Zero-dependency, 35+ SVG icons (pos, cart, package, store, trash, shield, dll.) |
+| **Icons** | Custom Crisp SVG Component (`AppIcon.vue`) | Zero-dependency, 40+ SVG icons (pos, cart, package, store, printer, edit, qr, check, download, shield, dll.) |
 | **Styling** | Vanilla CSS Tokens & Utility Architecture | Zero compile overhead, spring easing, glassmorphic |
 
 ### Prinsip Utama (Architectural Rules)
 1. **Pragmatic Layering (PRD Section 3.1)**:
    - UI murni dan atomik ditaruh di `src/shared/components/ui/`.
    - Logika halaman dan koordinasi data ditaruh di `src/modules/<nama_modul>/pages/`.
-   - Jangan membuat *abstraksi berlebih* (Repository/Service class tiruan) jika hanya untuk operasi CRUD sederhana.
+   - Modal spesifik domain ditaruh di `src/modules/<nama_modul>/components/`.
 2. **Deterministic Route Shells & Layout Chunking**:
-   - Layout utama (`AppLayout.vue` dan `PlatformLayout.vue`) beserta seluruh halaman konsol platform diimpor secara statis (*static import*) pada `src/router/index.js` untuk mengeliminasi potensi kegagalan *dynamic chunk loading* / network race condition pada browser.
-   - Parent route `/platform` tidak menggunakan redirect langsung di level parent (menghindari redirect loop / aborted navigation), melainkan didelegasikan ke child route `{ path: '', redirect: '/platform/dashboard' }`.
+   - Layout utama (`AppLayout.vue` dan `PlatformLayout.vue`) beserta halaman inti diimpor secara deterministik pada `src/router/index.js` untuk mengeliminasi potensi kegagalan *dynamic chunk loading* atau network race condition pada browser.
+   - Parent route `/platform` tidak menggunakan redirect langsung di level parent, melainkan didelegasikan ke child route `{ path: '', redirect: '/platform/dashboard' }`.
    - Inisialisasi aplikasi pada `src/main.js` menunggu `router.isReady()` sebelum memanggil `app.mount('#app')`, dilengkapi penangkap error visual global (`app.config.errorHandler` & window error logger) sehingga aplikasi tidak pernah mengalami *silent blank screen*.
-   - Semua `<RouterView>` dengan `<Transition>` dipagari guard `v-if="Component"` dan dipasangi `:key="$route.fullPath"`.
 3. **Defensive Template Formatting**:
-   - Seluruh pemformatan angka/mata uang pada template Vue dilarang memanggil method langsung seperti `.toLocaleString()` tanpa nilai fallback. Gunakan helper `formatNumber(val)` berbasis `Intl.NumberFormat('id-ID')` yang aman dari nilai `null`/`undefined`.
-4. **Authority Tenancy & Backend First**:
-   - Frontend tidak menentukan harga akhir, diskon, atau pajak secara otoritatif. Angka pada checkout disinkronkan dari respon kalkulasi backend.
-   - `tenant_id` tidak dikirim sebagai bukti kepemilikan data; backend menurunkannya dari sesi otentikasi domain/token.
-5. **Multi-Outlet Awareness (PRD Section 7)**:
+   - Seluruh pemformatan angka/mata uang pada template Vue dilarang memanggil method langsung seperti `.toLocaleString()` tanpa nilai fallback. Gunakan helper `formatRp(val)` berbasis `Intl.NumberFormat('id-ID')` yang aman dari nilai `null`/`undefined`.
+4. **Multi-Outlet Scoped Data (PRD Section 7)**:
    - Modul operasional (POS, Shift, Inventaris, Transaksi) selalu terikat pada cabang aktif (`currentOutletId` di `outletStore`).
    - Mengganti cabang aktif melalui `OutletSelector` otomatis memicu penyegaran konteks data tanpa memuat ulang seluruh halaman.
-6. **Immediate Watcher Function Ordering (TDZ Safety)**:
+5. **Immediate Watcher Function Ordering (TDZ Safety)**:
    - Pada blok `<script setup>`, penggunaan `watch(source, callback, { immediate: true })` menyebabkan callback dieksekusi secara sinkron saat inisialisasi komponen. Seluruh fungsi pembantu (seperti `resetForm()`) yang dipanggil di dalam watcher wajib dideklarasikan secara leksikal *sebelum* `watch` untuk mencegah `ReferenceError` akibat Temporal Dead Zone (TDZ).
 
 ---
 
-## 📁 Struktur Folder & Standar Penamaan
+## 📁 Struktur Folder & Seluruh Modul Frontend
 
 ```
 abdi-pos-frontend/src/
 ├── app/
 │   ├── layouts/
-│   │   ├── AppLayout.vue          # Layout tenant toko (Sidebar kolapsibel, Header, Toast viewport)
-│   │   └── PlatformLayout.vue     # Layout eksklusif Superadmin (SaaS Owner Console)
+│   │   ├── AppLayout.vue              # Layout tenant toko (Sidebar kolapsibel, Header, Toast viewport)
+│   │   └── PlatformLayout.vue         # Layout eksklusif Superadmin (SaaS Owner Console)
 │   └── router/
-│       └── index.js               # Route configuration & lazy imports
+│       └── index.js                   # Route configuration untuk seluruh 17 modul sistem
 ├── shared/
 │   ├── components/
-│   │   ├── icons/
-│   │   │   └── AppIcon.vue        # 30+ SVG icons siap pakai (pos, cart, package, store, dll.)
+│   │   ├── icons/AppIcon.vue          # 40+ SVG icons siap pakai (pos, cart, package, printer, qr, dll.)
 │   │   ├── layout/
-│   │   │   ├── AppHeader.vue      # Header atas, breadcrumb, outlet selector, tombol POS
-│   │   │   ├── AppSidebar.vue     # Navigasi bertingkat dengan grouping & badge
-│   │   │   └── OutletSelector.vue # Switcher cabang interaktif
+│   │   │   ├── AppHeader.vue          # Header atas, breadcrumb, outlet selector, tombol POS, profil dropdown
+│   │   │   ├── AppSidebar.vue         # Navigasi bertingkat dengan grouping & status badge
+│   │   │   ├── ModeTransitionOverlay.vue # Overlay animasi orbital perpindahan mode (Tenant ⇄ Superadmin)
+│   │   │   └── OutletSelector.vue     # Switcher cabang interaktif
 │   │   └── ui/
-│   │       ├── BaseAlert.vue      # Banner peringatan (info, success, warning, danger)
-│   │       ├── BaseBadge.vue      # Status badge dengan dot pulse
-│   │       ├── BaseButton.vue     # Tombol 6 varian warna, 3 ukuran, loading state
-│   │       ├── BaseCard.vue       # Kartu serbaguna dengan hover-lift
-│   │       ├── BaseInput.vue      # Input teks dengan prefix/suffix icon & validasi error
-│   │       ├── BaseModal.vue      # Modal pop-up (backdrop blur, focus trap, ESC listener)
-│   │       ├── ConfirmModal.vue   # Modal konfirmasi tindakan penting / berbahaya
-│   │       ├── MoneyDisplay.vue   # Format mata uang Rupiah (IDR) presisi
-│   │       ├── SkeletonLoader.vue # Shimmer wave placeholder saat loading
-│   │       └── ToastContainer.vue # Viewport mengambang untuk alert toast
-│   ├── composables/
-│   │   └── useToast.js            # Helper reaktif pemanggilan toast
+│   │       ├── BaseAlert.vue          # Banner peringatan (info, success, warning, danger)
+│   │       ├── BaseBadge.vue          # Status badge dengan dot pulse
+│   │       ├── BaseButton.vue         # Tombol 6 varian warna, 3 ukuran, loading state
+│   │       ├── BaseCard.vue           # Kartu serbaguna dengan hover-lift
+│   │       ├── BaseInput.vue          # Input teks dengan prefix/suffix icon & validasi error
+│   │       ├── BaseModal.vue          # Modal pop-up (backdrop blur, focus trap, ESC listener)
+│   │       ├── ConfirmModal.vue       # Modal konfirmasi tindakan penting / berbahaya
+│   │       ├── MoneyDisplay.vue       # Format mata uang Rupiah (IDR) presisi
+│   │       ├── SkeletonLoader.vue     # Shimmer wave placeholder saat loading
+│   │       └── ToastContainer.vue     # Viewport mengambang untuk alert toast
+│   ├── composables/useToast.js        # Helper reaktif pemanggilan toast
 │   ├── stores/
-│   │   ├── authStore.js           # State pengguna, info tenant, & status shift kasir
-│   │   ├── outletStore.js         # State daftar cabang & cabang aktif
-│   │   └── uiStore.js             # State sidebar terbuka/tertutup & daftar notifikasi
-│   └── styles/
-│       └── design-system.css      # Variabel tema, palet biru, & animasi keyframe
+│   │   ├── authStore.js               # State pengguna, info tenant, demo accounts, & sesi aktif
+│   │   ├── outletStore.js             # State cabang, switch outlet, & CRUD outlet
+│   │   └── uiStore.js                 # State sidebar terbuka/tertutup & daftar notifikasi
+│   └── styles/design-system.css       # Variabel tema, palet biru, & animasi keyframe
 └── modules/
-    ├── dashboard/
-    │   ├── components/            # StatCard, SalesChartWidget, RecentTransactions, dll.
-    │   └── pages/DashboardPage.vue
-    ├── pos/
-    │   └── pages/PosCashierPage.vue
-    ├── showcase/
-    │   └── pages/ComponentShowcasePage.vue
-    ├── auth/                      # MODUL OTENTIKASI & PROFIL PENGGUNA
+    ├── auth/                          # 1. OTENTIKASI & PROFIL
     │   ├── components/
-    │   │   ├── EditProfileModal.vue   # Modal CRUD profil (Nama, Email, HP, Domisili, Avatar)
+    │   │   ├── EditProfileModal.vue   # Modal edit data diri & avatar
     │   │   └── ChangePasswordModal.vue# Modal ganti sandi + Password Strength Meter
     │   └── pages/
-    │       ├── LoginPage.vue          # Halaman masuk dengan 1-click Demo Account Switcher
-    │       └── ProfilePage.vue        # Halaman profil lengkap, shift kasir, RBAC, sesi aktif
-    ├── platform/                  # MODUL SUPERADMIN SAAS OWNER
+    │       ├── LoginPage.vue          # Login dengan 1-click Demo Account Selector
+    │       └── ProfilePage.vue        # Profil lengkap, hak akses RBAC, & sesi aktif
+    ├── dashboard/                     # 2. DASHBOARD UTAMA
+    │   └── pages/DashboardPage.vue    # Omset harian, tren jam ramai, & menu terlaris
+    ├── pos/                           # 3. KASIR POINT OF SALE (POS)
+    │   └── pages/PosCashierPage.vue   # Layar kasir layar penuh, keranjang, hitung PB1 & pembayaran
+    ├── products/                      # 4. MASTER PRODUK & KATEGORI
     │   ├── components/
-    │   │   ├── TenantModal.vue    # Modal pendaftaran & edit tenant baru
-    │   │   └── PlanModal.vue      # Modal pembuatan & edit paket langganan
+    │   │   ├── ProductModal.vue       # CRUD Produk (Nama, SKU, Kategori, Harga Jual, HPP, Resep)
+    │   │   └── CategoryModal.vue      # CRUD Kategori (Nama, Slug, Warna, Ikon)
+    │   ├── pages/
+    │   │   ├── ProductsPage.vue       # Tabel produk, filter kategori, badge stok, aksi CRUD
+    │   │   └── CategoriesPage.vue     # Grid kategori dengan counter item menu
+    │   └── stores/productStore.js     # State katalog & kategori produk
+    ├── inventory/                     # 5. INVENTARIS & STOK CABANG
+    │   ├── components/
+    │   │   ├── StockOpnameModal.vue   # Rekonsiliasi stok fisik vs sistem & hitung selisih
+    │   │   └── MaterialModal.vue      # CRUD Bahan Baku (Satuan, Batas Minimum, Biaya/Unit)
+    │   ├── pages/InventoryPage.vue    # Tabel inventaris, peringatan stok kritis, penyesuaian opname
+    │   └── stores/inventoryStore.js   # State persediaan bahan baku per outlet
+    ├── transactions/                  # 6. TRANSAKSI & SHIFT KASIR
+    │   ├── components/
+    │   │   ├── ReceiptDetailModal.vue # Preview struk thermal POS, cetak struk, & void transaksi
+    │   │   └── ShiftModal.vue         # Buka shift (modal laci) & Tutup shift (rekonsiliasi kas)
+    │   ├── pages/
+    │   │   ├── TransactionsPage.vue   # Riwayat invoice, filter metode bayar/status, export CSV
+    │   │   └── ShiftsPage.vue         # Status shift aktif, riwayat pergantian kasir, audit selisih
+    │   └── stores/transactionStore.js # State transaksi penjualan & riwayat shift
+    ├── orders/                        # 7. PESANAN SELF-ORDER & MEJA
+    │   ├── components/
+    │   │   ├── TableModal.vue         # Tambah & edit nomor meja, kapasitas, area ruangan
+    │   │   └── TableQrModal.vue       # Simulator standee akrilik QR meja, salin URL, cetak PDF
+    │   ├── pages/OrdersPage.vue       # Kitchen Display System (KDS live kanban) & Grid Meja
+    │   └── stores/orderStore.js       # Pipeline pesanan dapur (Pending, Cooking, Ready, Completed)
+    ├── customers/                     # 8. PELANGGAN & LOYALITAS MEMBER
+    │   ├── components/CustomerModal.vue # CRUD Member (Nama, WhatsApp, Tier, Poin, Preferensi)
+    │   ├── pages/CustomersPage.vue    # Database member, tier badge, akumulasi poin, total belanja
+    │   └── stores/customerStore.js    # State pelanggan & saldo poin loyalti
+    ├── promotions/                    # 9. DISKON & BUNDLING
+    │   ├── components/PromotionModal.vue # CRUD Promo (Persentase, Nominal, Bundling, Tebus Murah)
+    │   ├── pages/PromotionsPage.vue   # Kartu & tabel promosi, sakelar aktif/nonaktif, kuota klaim
+    │   └── stores/promotionStore.js   # State program diskon & voucher promo
+    ├── reports/                       # 10. LAPORAN & ANALITIK KEUANGAN
+    │   └── pages/ReportsPage.vue      # Omset kotor, laba kotor, PPN, breakdown QRIS/Cash, ranking produk
+    ├── outlets/                       # 11. CABANG & STAF (RBAC)
+    │   ├── components/
+    │   │   ├── OutletModal.vue        # CRUD Cabang fisik (Kode, Alamat, Kontak, Jam Buka)
+    │   │   └── StaffModal.vue         # CRUD Akun Staf (Peran: Kasir/Supervisor/Manager/Dapur)
+    │   ├── pages/
+    │   │   ├── OutletsPage.vue        # Grid cabang, ganti cabang aktif, indikator pusat utama
+    │   │   └── StaffPage.vue          # Tabel staf, penugasan cabang, role badge, last login
+    │   └── stores/staffStore.js       # State pengguna & staf tenant
+    ├── settings/                      # 12. PENGATURAN BISNIS, DOMAIN & LANGGANAN
+    │   ├── components/
+    │   │   ├── ConnectDomainModal.vue # Form custom domain & panduan CNAME DNS
+    │   │   └── UpgradePlanModal.vue   # Perbandingan paket (Starter, Pro, Enterprise) & checkout
+    │   ├── pages/
+    │   │   ├── BusinessSettingsPage.vue # Profil brand, tarif PPN 11%, format struk, pesan footer
+    │   │   ├── TenantDomainsPage.vue  # Status subdomain .abdipos.com, custom domain, panduan DNS
+    │   │   └── SubscriptionPage.vue   # Paket Pro Plan aktif, kuota pemakaian, faktur tagihan bulanan
+    ├── platform/                      # 13. KONSOL SUPERADMIN (SAAS OWNER)
+    │   ├── components/
+    │   │   ├── TenantModal.vue        # Modal pendaftaran & edit tenant baru
+    │   │   └── PlanModal.vue          # Modal paket langganan SaaS
     │   ├── pages/
     │   │   ├── PlatformDashboardPage.vue # Metrik MRR, total tenant, & kesehatan sistem
     │   │   ├── PlatformTenantsPage.vue   # Manajemen tenant, impersonate, suspend
     │   │   ├── PlatformPlansPage.vue     # CRUD paket langganan & breakdown subscriber
     │   │   ├── PlatformDomainsPage.vue   # Monitoring verifikasi DNS & SSL
     │   │   └── PlatformAuditLogsPage.vue # Rekam jejak audit keamanan platform
-    │   └── stores/
-    │       └── platformStore.js   # State & actions pengelolaan SaaS platform
-    └── generic/
-        └── pages/ModulePlaceholderPage.vue
+    │   └── stores/platformStore.js    # State & actions pengelolaan SaaS platform
+    └── showcase/
+        └── pages/ComponentShowcasePage.vue # Demonstrasi interaktif seluruh komponen UI
 ```
-
-### Konvensi Penamaan (Naming Conventions)
-- **Komponen Vue**: Menggunakan `PascalCase` (contoh: `BaseButton.vue`, `SalesChartWidget.vue`).
-- **Composables**: Menggunakan awalan `use` dengan `camelCase` (contoh: `useToast.js`).
-- **Pinia Stores**: Menggunakan awalan `use` diakhiri `Store` (contoh: `useOutletStore.js`).
-- **Rute URL**: Menggunakan `kebab-case` (contoh: `/app/components-demo`, `/app/transactions`).
-- **Kelas CSS**: Menggunakan `kebab-case` BEM-light (contoh: `.base-button`, `.btn-primary`, `.is-active`).
 
 ---
 
@@ -163,94 +200,19 @@ Seluruh token visual dikelola di `src/shared/styles/design-system.css`.
 
 ---
 
-## 🧠 State Management & Data Flow
+## 🧠 State Management & Data Stores (Pinia)
 
-### 1. `authStore` (`src/shared/stores/authStore.js`)
-Menyimpan sesi pengguna saat ini, info tenant aktif (nama bisnis, paket langganan, subdomain/custom domain), status shift kasir berjalan (`activeShift`), serta data profil pengguna.
-- **Actions**:
-  - `login(email, password, remember)`: Otentikasi pengguna, mendukung pencocokan akun demo (Owner, Kasir, Superadmin) atau kredensial kustom.
-  - `logout()`: Mengakhiri sesi dan membersihkan kredensial.
-  - `updateProfile(data)`: Mengubah nama, kontak telepon/WA, alamat domisili, dan avatar foto pengguna.
-  - `changePassword(oldPass, newPass)`: Memperbarui kata sandi dengan validasi keamanan.
-  - `terminateSession(sessionId)`: Memutus koneksi dari perangkat lain yang terhubung.
-- **Demo Accounts**: Menyediakan 3 kredensial akun instan (*1-click selector*) untuk mempermudah evaluasi antar peran (Owner, Kasir, Superadmin).
-
-### 2. `outletStore` (`src/shared/stores/outletStore.js`)
-Mengelola cabang yang diizinkan untuk pengguna:
-```javascript
-const outletStore = useOutletStore()
-// Ambil data cabang aktif
-const current = outletStore.currentOutlet
-// Ganti cabang (otomatis memicu notifikasi toast)
-outletStore.switchOutlet(targetOutletId)
-```
-
-### 3. `useToast` (`src/shared/composables/useToast.js`)
-Sistem notifikasi mengambang global tanpa perlu me-mount komponen manual di setiap halaman:
-```javascript
-import { useToast } from '@/shared/composables/useToast'
-const toast = useToast()
-
-toast.success('Transaksi #TRX-101 berhasil disimpan', 'Sukses!')
-toast.error('Printer kasir tidak merespon', 'Gagal')
-toast.warning('Stok terigu tersisa 3 kg', 'Perhatian')
-toast.info('Cabang berhasil dialihkan ke Tebet', 'Informasi')
-```
-
-### 4. `platformStore` (`src/modules/platform/stores/platformStore.js`)
-Store khusus Superadmin (SaaS Owner) untuk memantau metrik ekosistem platform:
-- **Metrik Terhitung**: `totalTenants`, `activeTenants`, `trialTenants`, `totalMRR` (pendapatan berulang bulanan), `totalOutletsManaged`.
-- **Manajemen Tenant**: `createTenant(data)`, `updateTenantStatus(id, status, reason)`, `deleteTenant(id)`.
-- **Manajemen Paket SaaS**: `createPlan(data)`, `updatePlan(id, data)`, `deletePlan(id)` (dengan proteksi blokir jika paket sedang dipakai tenant aktif).
-- **Verifikasi Domain**: `verifyDomain(domainId)` (verifikasi DNS & penerbitan SSL wildcard/custom).
-- **Audit Logging**: Rekam jejak otomatis setiap aksi superadmin demi keamanan multi-tenant.
-
----
-
-## 🧩 Katalog & API Komponen Pendukung
-
-### 1. `BaseButton.vue`
-| Prop | Tipe | Default | Deskripsi |
-|---|---|---|---|
-| `variant` | String | `'primary'` | `'primary'`, `'secondary'`, `'outline'`, `'ghost'`, `'danger'`, `'success'` |
-| `size` | String | `'md'` | `'sm'` (32px), `'md'` (40px), `'lg'` (48px touch-friendly) |
-| `loading` | Boolean | `false` | Menampilkan spinner animasi dan menonaktifkan klik |
-| `disabled`| Boolean | `false` | Mematikan tombol |
-| `block` | Boolean | `false` | Lebar penuh 100% |
-| `iconOnly`| Boolean | `false` | Bentuk proporsional untuk tombol hanya ikon |
-
-**Slots**: `#icon` (ikon kiri), `#trailingIcon` (ikon kanan), *default* (teks tombol).
-
-### 2. `BaseModal.vue`
-Modal dialog yang telah memenuhi standar aksesibilitas WAI-ARIA (`role="dialog"`, `aria-modal="true"`, *body scroll lock*, dan penutup via tombol `ESC` atau klik latar luar).
-
-| Prop | Tipe | Default | Deskripsi |
-|---|---|---|---|
-| `v-model` | Boolean | `false` | State visibilitas modal |
-| `title` | String | `''` | Judul modal |
-| `subtitle`| String | `''` | Sub-judul modal |
-| `size` | String | `'md'` | `'sm'`, `'md'`, `'lg'`, `'xl'`, `'full'` |
-| `showClose`| Boolean | `true` | Menampilkan tombol silang (X) di pojok |
-
-**Slots**: `#header`, `#footer`, *default body*.
-
-### 3. `ConfirmModal.vue`
-Komponen dialog konfirmasi untuk tindakan krusial (misal: Void transaksi, Tutup shift kasir, Hapus data produk).
-- Dilengkapi **halo ikon berdenyut (*pulsing ring*)**.
-- Mendukung varian: `'danger'` (merah), `'warning'` (kuning/oranye), `'info'` (biru).
-- Memancarkan event `@confirm` dan `@cancel`.
-
-### 4. `BaseAlert.vue`
-Banner pesan kontekstual dengan aksen garis kiri tebal dan ikon otomatis sesuai varian (`info`, `success`, `warning`, `danger`). Mendukung prop `dismissible="true"`.
-
-### 5. `BaseInput.vue`
-Input teks terstandarisasi dengan label, penanda wajib (`*`), slot `#prefix` & `#suffix`, tombol *clear* cepat, dan pesan error validasi yang beranimasi halus.
-
-### 6. `MoneyDisplay.vue`
-Menampilkan angka nominal Rupiah (IDR) dengan pemisah ribuan standar Indonesia (`Intl.NumberFormat('id-ID')`), simbol `Rp`, dan styling ukuran (`sm`, `md`, `lg`, `xl`).
-
-### 7. `SkeletonLoader.vue`
-Placeholder pemuatan data beranimasi shimmer untuk teks, avatar bundar, tombol, atau kartu (*card*).
+1. **`authStore`**: Sesi pengguna, akun demo 1-klik, hak akses peran (Owner, Kasir, Superadmin), pembaruan profil & kata sandi.
+2. **`outletStore`**: Daftar cabang bisnis, pemilihan cabang aktif (`switchOutlet`), dan aksi CRUD cabang.
+3. **`productStore`**: Master katalog item menu, kalkulasi HPP/margin laba, kategori, dan penghitungan stok otomatis.
+4. **`inventoryStore`**: Data bahan baku per cabang, peringatan stok kritis, dan penyesuaian fisik (*stock opname*).
+5. **`transactionStore`**: Riwayat struk invoice penjualan, pembatalan (*void*), pembukaan shift kasir, dan rekonsiliasi kas laci.
+6. **`orderStore`**: Antrean pesanan dapur secara live (*Kitchen Display System*) dan manajemen meja/QR self-order.
+7. **`customerStore`**: Database member pelanggan, saldo poin loyalitas, riwayat belanja, dan tingkatan *membership tier*.
+8. **`promotionStore`**: Program diskon persentase, nominal flat, paket bundling hemat, dan tebus murah.
+9. **`staffStore`**: Akun staf operasional, peran RBAC, dan penugasan cabang.
+10. **`platformStore`**: Khusus Superadmin SaaS untuk mengelola tenant, paket langganan, mapping domain, dan audit log.
+11. **`modeTransitionStore`**: Mengelola state transisi perpindahan konteks antara dashboard tenant biasa (`/app/*`) dan konsol superadmin (`/platform/*`), mengontrol progress bar 0-100%, pesan status dinamis, dan animasi orbital emblem.
 
 ---
 
@@ -273,7 +235,7 @@ Akses aplikasi melalui peramban di: **`http://localhost:5173/`**
 cd "abdi-pos-frontend"
 npm run build
 ```
-Hasil berkas build siap rilis akan terbit di folder `dist/` dalam hitungan milidetik.
+Hasil berkas build siap rilis akan terbit di folder `dist/` dengan status exit code 0 tanpa error.
 
 ---
 

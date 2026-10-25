@@ -13,6 +13,9 @@ import PlatformAuditLogsPage from '../modules/platform/pages/PlatformAuditLogsPa
 import LoginPage from '../modules/auth/pages/LoginPage.vue'
 import ProfilePage from '../modules/auth/pages/ProfilePage.vue'
 
+// Mode transition store
+import { useModeTransitionStore } from '../shared/stores/modeTransitionStore'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -51,159 +54,145 @@ const router = createRouter({
         {
           path: 'transactions',
           name: 'transactions',
-          component: () => import('../modules/generic/pages/ModulePlaceholderPage.vue'),
+          component: () => import('../modules/transactions/pages/TransactionsPage.vue'),
           meta: {
             title: 'Riwayat Transaksi',
             description: 'Daftar seluruh transaksi struk kasir dan pembayaran digital.',
             icon: 'receipt',
-            actionLabel: 'Export Transaksi (CSV)',
             outletScoped: true
           }
         },
         {
           path: 'shifts',
           name: 'shifts',
-          component: () => import('../modules/generic/pages/ModulePlaceholderPage.vue'),
+          component: () => import('../modules/transactions/pages/ShiftsPage.vue'),
           meta: {
             title: 'Shift Kasir',
             description: 'Kelola jam kerja, uang kas masuk, dan rekonsiliasi kas kasir.',
             icon: 'clock',
-            actionLabel: 'Buka Shift Baru',
             outletScoped: true
           }
         },
         {
           path: 'orders',
           name: 'orders',
-          component: () => import('../modules/generic/pages/ModulePlaceholderPage.vue'),
+          component: () => import('../modules/orders/pages/OrdersPage.vue'),
           meta: {
             title: 'Pesanan Self-Order',
             description: 'Pantau pesanan yang masuk dari QR meja dan website storefront.',
-            icon: 'cart',
-            actionLabel: 'Atur Meja & QR'
+            icon: 'cart'
           }
         },
         {
           path: 'products',
           name: 'products',
-          component: () => import('../modules/generic/pages/ModulePlaceholderPage.vue'),
+          component: () => import('../modules/products/pages/ProductsPage.vue'),
           meta: {
             title: 'Master Produk & Menu',
             description: 'Kelola item menu, SKU, harga jual, dan konfigurasi bahan.',
-            icon: 'package',
-            actionLabel: 'Tambah Produk Baru'
+            icon: 'package'
           }
         },
         {
           path: 'categories',
           name: 'categories',
-          component: () => import('../modules/generic/pages/ModulePlaceholderPage.vue'),
+          component: () => import('../modules/products/pages/CategoriesPage.vue'),
           meta: {
             title: 'Kategori Produk',
             description: 'Pengelompokan menu seperti Terang Bulan, Martabak, Minuman.',
-            icon: 'tag',
-            actionLabel: 'Tambah Kategori'
+            icon: 'tag'
           }
         },
         {
           path: 'inventory',
           name: 'inventory',
-          component: () => import('../modules/generic/pages/ModulePlaceholderPage.vue'),
+          component: () => import('../modules/inventory/pages/InventoryPage.vue'),
           meta: {
             title: 'Stok & Inventaris Cabang',
             description: 'Pantau mutasi bahan baku dan sisa persediaan di outlet terpilih.',
             icon: 'boxes',
-            actionLabel: 'Penyesuaian Stok (Opname)',
             outletScoped: true
           }
         },
         {
           path: 'customers',
           name: 'customers',
-          component: () => import('../modules/generic/pages/ModulePlaceholderPage.vue'),
+          component: () => import('../modules/customers/pages/CustomersPage.vue'),
           meta: {
             title: 'Pelanggan & Referral',
             description: 'Database pelanggan loyal, poin membership, dan kode referral.',
-            icon: 'users',
-            actionLabel: 'Daftarkan Pelanggan'
+            icon: 'users'
           }
         },
         {
           path: 'promotions',
           name: 'promotions',
-          component: () => import('../modules/generic/pages/ModulePlaceholderPage.vue'),
+          component: () => import('../modules/promotions/pages/PromotionsPage.vue'),
           meta: {
             title: 'Diskon & Bundling Promosi',
             description: 'Atur paket bundling hemat, tebus murah, dan voucher potongan harga.',
-            icon: 'gift',
-            actionLabel: 'Buat Promo Baru'
+            icon: 'gift'
           }
         },
         {
           path: 'reports',
           name: 'reports',
-          component: () => import('../modules/generic/pages/ModulePlaceholderPage.vue'),
+          component: () => import('../modules/reports/pages/ReportsPage.vue'),
           meta: {
             title: 'Laporan Penjualan & Analitik',
             description: 'Laporan laba kotor, item terlaris, metode bayar, dan performa cabang.',
             icon: 'chart',
-            actionLabel: 'Download Laporan (Excel)',
             outletScoped: true
           }
         },
         {
           path: 'outlets',
           name: 'outlets',
-          component: () => import('../modules/generic/pages/ModulePlaceholderPage.vue'),
+          component: () => import('../modules/outlets/pages/OutletsPage.vue'),
           meta: {
             title: 'Kelola Cabang / Outlet',
             description: 'Daftar cabang operasional bisnis di bawah naungan tenant Anda.',
-            icon: 'store',
-            actionLabel: 'Tambah Cabang Baru'
+            icon: 'store'
           }
         },
         {
           path: 'users',
           name: 'users',
-          component: () => import('../modules/generic/pages/ModulePlaceholderPage.vue'),
+          component: () => import('../modules/outlets/pages/StaffPage.vue'),
           meta: {
             title: 'Staf & Hak Akses',
             description: 'Kelola akun kasir, supervisor cabang, dan izin akses fitur.',
-            icon: 'shield',
-            actionLabel: 'Undang Staf Baru'
+            icon: 'shield'
           }
         },
         {
           path: 'settings',
           name: 'settings',
-          component: () => import('../modules/generic/pages/ModulePlaceholderPage.vue'),
+          component: () => import('../modules/settings/pages/BusinessSettingsPage.vue'),
           meta: {
             title: 'Pengaturan Bisnis Tenant',
             description: 'Profil bisnis, logo toko, format struk, dan opsi pajak default.',
-            icon: 'settings',
-            actionLabel: 'Simpan Perubahan'
+            icon: 'settings'
           }
         },
         {
           path: 'domains',
           name: 'domains',
-          component: () => import('../modules/generic/pages/ModulePlaceholderPage.vue'),
+          component: () => import('../modules/settings/pages/TenantDomainsPage.vue'),
           meta: {
             title: 'Domain & Subdomain SaaS',
             description: 'Kelola subdomain bawaan (.abdipos.com) atau pasang custom domain (.com/.id).',
-            icon: 'globe',
-            actionLabel: 'Pasang Custom Domain'
+            icon: 'globe'
           }
         },
         {
           path: 'subscription',
           name: 'subscription',
-          component: () => import('../modules/generic/pages/ModulePlaceholderPage.vue'),
+          component: () => import('../modules/settings/pages/SubscriptionPage.vue'),
           meta: {
             title: 'Paket Langganan SaaS',
             description: 'Informasi paket Pro Plan, batasan cabang aktif, dan tagihan.',
-            icon: 'credit-card',
-            actionLabel: 'Kelola Langganan'
+            icon: 'credit-card'
           }
         }
       ]
@@ -270,6 +259,35 @@ const router = createRouter({
   ],
   scrollBehavior() {
     return { top: 0 }
+  }
+})
+
+// Navigation Guard for Smooth Animated Loading between Tenant and Superadmin Modes
+router.beforeEach((to, from) => {
+  const isFromTenant = from.matched.length > 0 && (from.path.startsWith('/app') || from.path.startsWith('/pos'))
+  const isToSuperadmin = to.path.startsWith('/platform')
+
+  const isFromSuperadmin = from.matched.length > 0 && from.path.startsWith('/platform')
+  const isToTenant = to.path.startsWith('/app') || to.path.startsWith('/pos')
+
+  if (isFromTenant && isToSuperadmin) {
+    try {
+      const modeStore = useModeTransitionStore()
+      modeStore.startTransition('superadmin')
+    } catch (e) {
+      console.warn('Mode transition warning:', e)
+    }
+  } else if (isFromSuperadmin && isToTenant) {
+    try {
+      const modeStore = useModeTransitionStore()
+      modeStore.startTransition('tenant')
+    } catch (e) {
+      console.warn('Mode transition warning:', e)
+    }
+  }
+
+  if (to.meta && to.meta.title) {
+    document.title = `${to.meta.title} — Abdi POS`
   }
 })
 
