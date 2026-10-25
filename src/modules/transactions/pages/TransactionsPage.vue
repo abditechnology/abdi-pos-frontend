@@ -16,45 +16,49 @@
       </div>
     </div>
 
-    <!-- Metric Stat Cards -->
-    <div class="metrics-grid">
-      <div class="metric-card bg-blue-50/60 border-blue-100">
-        <div class="metric-icon-box bg-blue-600 text-white">
-          <AppIcon name="dollar" :size="20" />
+    <!-- Metric Stat Cards (Consistent Modern Cards with Colored Halo Icons) -->
+    <div class="metrics-grid-4">
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-blue">
+          <AppIcon name="dollar" :size="24" />
         </div>
-        <div class="metric-info">
-          <span class="metric-label">Total Omset Penjualan</span>
-          <span class="metric-value text-blue-900">{{ formatRp(totalRevenue) }}</span>
-        </div>
-      </div>
-
-      <div class="metric-card bg-emerald-50/60 border-emerald-100">
-        <div class="metric-icon-box bg-emerald-600 text-white">
-          <AppIcon name="receipt" :size="20" />
-        </div>
-        <div class="metric-info">
-          <span class="metric-label">Transaksi Berhasil</span>
-          <span class="metric-value text-emerald-900">{{ paidCount }} Transaksi</span>
+        <div class="stat-body">
+          <span class="stat-label">Total Omset Penjualan</span>
+          <span class="stat-value font-mono">{{ formatRp(totalRevenue) }}</span>
+          <span class="stat-sub">Akumulasi transaksi hari ini</span>
         </div>
       </div>
 
-      <div class="metric-card bg-indigo-50/60 border-indigo-100">
-        <div class="metric-icon-box bg-indigo-600 text-white">
-          <AppIcon name="chart" :size="20" />
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-emerald">
+          <AppIcon name="receipt" :size="24" />
         </div>
-        <div class="metric-info">
-          <span class="metric-label">Rata-rata Basket Size</span>
-          <span class="metric-value text-indigo-900">{{ formatRp(averageBasket) }}</span>
+        <div class="stat-body">
+          <span class="stat-label">Transaksi Berhasil</span>
+          <span class="stat-value">{{ paidCount }} Transaksi</span>
+          <span class="stat-sub">Struk pembayaran lunas</span>
         </div>
       </div>
 
-      <div class="metric-card bg-rose-50/60 border-rose-100">
-        <div class="metric-icon-box bg-rose-600 text-white">
-          <AppIcon name="alert-circle" :size="20" />
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-indigo">
+          <AppIcon name="chart" :size="24" />
         </div>
-        <div class="metric-info">
-          <span class="metric-label">Transaksi Void</span>
-          <span class="metric-value text-rose-900">{{ voidCount }} Struk</span>
+        <div class="stat-body">
+          <span class="stat-label">Rata-rata Basket Size</span>
+          <span class="stat-value font-mono">{{ formatRp(averageBasket) }}</span>
+          <span class="stat-sub">Rata-rata belanja per invoice</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-rose">
+          <AppIcon name="alert-circle" :size="24" />
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Transaksi Void</span>
+          <span class="stat-value">{{ voidCount }} Struk</span>
+          <span class="stat-sub">Pembatalan struk kasir</span>
         </div>
       </div>
     </div>
@@ -298,41 +302,46 @@ function exportToCSV() {
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .page-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.625rem;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
   color: #0f172a;
+  margin: 0;
 }
 
 .page-subtitle {
-  font-size: 0.875rem;
+  font-size: 0.925rem;
+  line-height: 1.6;
   color: #64748b;
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
 }
 
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
 }
 
 .metric-card {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1.25rem;
+  gap: 1.25rem;
+  padding: 1.5rem;
   border-radius: var(--radius-lg);
   border-width: 1px;
 }
 
 .metric-icon-box {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -346,15 +355,17 @@ function exportToCSV() {
 }
 
 .metric-label {
-  font-size: 0.775rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: #64748b;
+  margin-bottom: 0.25rem;
 }
 
 .metric-value {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.35rem;
+  font-weight: 800;
   font-family: monospace;
+  line-height: 1.3;
 }
 
 .table-toolbar {

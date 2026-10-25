@@ -30,7 +30,7 @@ Bahasa yang digunakan di sini santai, ringan, dan langsung ke intinya agar Anda 
 Layar Abdi POS terbagi menjadi 3 area intuitif:
 - **Header Atas**: Nama bisnis, tombol ganti cabang (*Outlet Selector*), tombol cepat **"Buka POS (F2)"**, bel notifikasi bahan menipis, dan menu profil pengguna.
 - **Sidebar Kiri**: Navigasi lengkap yang dikelompokkan berdasarkan tugas harian (Operasional, Master Data, Promosi, Bisnis, Pengaturan).
-- **Area Konten Utama**: Tempat data ditampilkan dalam bentuk kartu metrik, tabel interaktif, filter cerdas, dan formulir pop-up (*modal*).
+- **Area Konten Utama**: Tempat data ditampilkan dalam bentuk kartu metrik (*Stat Cards* berbingkai rapi dengan ikon berwarna seperti pada Kategori & Shift), tabel interaktif, filter cerdas, dan formulir pop-up (*modal*).
 
 ---
 
@@ -58,10 +58,16 @@ Buka menu **"Riwayat Transaksi"** (`/app/transactions`):
 ## 4. Buka-Tutup Shift & Rekonsiliasi Kas Laci
 
 Buka menu **"Shift Kasir"** (`/app/shifts`):
-- **Buka Shift Baru**: Masukkan modal uang receh awal di laci kasir (misal Rp 200.000). Klik **"Buka Shift Sekarang"**.
-- **Pantau Kas Berjalan**: Banner biru di atas menampilkan nama kasir aktif, jam mulai bertugas, dan akumulasi uang masuk sistem.
-- **Tutup Shift & Hitung Uang Fisik**:
-  1. Klik tombol **"Tutup Shift Aktif"**.
+- **Hero Card Shift Aktif yang Bersih & Rapi (Clean White)**:
+  - Saat kasir sedang bertugas, bagian atas menampilkan kartu hero putih bersih (*clean white*) dengan border halus dan bayangan lembut yang senada dengan antarmuka aplikasi.
+  - Menampilkan badge hijau berkedip **"● SHIFT SEDANG BERJALAN"**, avatar inisial kasir, nama kasir aktif, jam buka laci, dan jenis shift (misal *Shift Pagi - Kasir Utama*).
+  - Terdapat **3 Kartu Metrik Warna Lembut yang Terpisah**:
+    1. 💰 **Modal Awal Laci** (Kartu Kuning/Amber): Uang kas kecil yang diinput saat pertama kali membuka shift (misal `Rp 200.000`).
+    2. 📈 **Penjualan Kas Masuk** (Kartu Cyan/Teal): Akumulasi uang tunai yang diterima dari pelanggan selama shift berjalan (misal `+ Rp 70.000`).
+    3. ⚖️ **Total Kas Sistem (Seharusnya)** (Kartu Hijau/Emerald): Jumlah kas akhir yang seharusnya ada di laci kasir (Modal + Penjualan tunai = `Rp 270.000`).
+- **Buka Shift Baru**: Jika belum ada shift berjalan, muncul kartu peringatan kuning lembut berikon jam. Masukkan modal uang receh awal di laci kasir lalu klik **"Buka Shift Sekarang"**.
+- **Tutup Shift & Rekonsiliasi Kas**:
+  1. Klik tombol merah kontras **"Tutup Shift & Rekonsiliasi Kas"** yang terletak jelas di pojok kanan kartu hero shift.
   2. Hitung uang kertas dan koin di laci kasir secara fisik.
   3. Masukkan total uang fisik yang dihitung ke dalam kolom formulir.
   4. Sistem akan otomatis menghitung selisih:
@@ -76,6 +82,10 @@ Buka menu **"Shift Kasir"** (`/app/shifts`):
 
 Buka menu **"Pesanan Self-Order"** (`/app/orders`):
 
+> [!TIP]
+> **Navigasi Tab Selalu Stabil di Kanan Atas:**  
+> Tombol pengalih antara **Kitchen Display (Live KDS)** dan **Daftar Meja & QR** kini selalu terkunci rapi di pojok kanan atas sejajar dengan judul halaman. Anda dapat berpindah antar-tampilan dengan cepat tanpa perubahan posisi tombol!
+
 ### A. Kitchen Display (KDS Kanban Live Dapur)
 Papan kanban interaktif untuk koki dapur memproses pesanan:
 1. **Pesanan Baru Masuk**: Kartu pesanan berwarna kuning dengan nomor meja dan rincian menu pesanan. Klik **"Mulai Masak →"** saat koki mulai memanggang.
@@ -85,7 +95,7 @@ Papan kanban interaktif untuk koki dapur memproses pesanan:
 
 ### B. Daftar Meja & Standee QR Meja
 Pindah ke tab **"Daftar Meja & QR"**:
-- **Tambah Meja**: Klik **"Tambah Meja Baru"**, masukkan nomor meja (misal *Meja 07*), kapasitas kursi, dan area (Indoor AC / Outdoor).
+- **Bilah Aksi & Tambah Meja**: Di bagian atas daftar meja terdapat toolbar khusus. Klik tombol **"Tambah Meja Baru"** untuk mendaftarkan meja baru, kapasitas kursi, dan area (Indoor AC / Outdoor).
 - **Lihat & Cetak QR Meja**: Klik **"Lihat QR"** pada kartu meja. Akan muncul pratinjau standee akrilik meja siap cetak yang memuat QR code dan URL pemesanan langsung (`https://order.abdipos.com/m/meja-01`). Pelanggan cukup scan untuk pesan dan bayar dari meja tanpa antre di kasir!
 
 ---
@@ -154,26 +164,26 @@ Buka menu **"Laporan Penjualan"** (`/app/reports`):
 ## 11. Mengelola Cabang & Staf Karyawan (Hak Akses RBAC)
 
 ### A. Kelola Cabang (`/app/outlets`)
-- Daftarkan cabang baru bisnis Anda (nama cabang, kode cabang, alamat ruko/mall, no telepon gerai).
+- **Banner Cabang Aktif**: Menampilkan nama cabang yang sedang dipilih, kode cabang, alamat gerai, dan status koneksi ke kasir POS secara live.
+- **Kartu Cabang Modern**: Setiap outlet disajikan dalam kartu modern berbingkai halus dengan ikon gerai berwarna, badge *Pusat Utama* (jika merupakan pusat), alamat, kontak telepon, serta tombol cepat **"Pilih Cabang Ini"**, ubah data, atau hapus.
 - Ganti cabang aktif operasional hanya dengan mengklik **"Pilih Cabang Ini"**.
-- Tentukan outlet mana yang menjadi **Pusat Utama** bisnis Anda.
 
 ### B. Kelola Staf & Akun Kasir (`/app/users`)
-- Klik **"Undang Staf Baru"** untuk membuatkan akun login karyawan.
-- Pilih Peran / Role:
-  - **Owner**: Pemilik bisnis dengan akses tak terbatas ke semua cabang dan laporan keuangan.
-  - **Manager**: Mengatur menu, harga promo, dan operasional seluruh cabang.
-  - **Supervisor**: Menyetujui pembatalan struk (*void*), mutasi stok, dan audit shift kasir.
-  - **Cashier (Kasir)**: Khusus membuka shift laci dan melayani transaksi pembayaran POS.
-  - **Kitchen (Dapur)**: Khusus memantau antrean pesanan di layar Kitchen Display System (KDS).
-- Tugaskan staf pada cabang outlet yang sesuai tempat kerjanya.
+- **Kartu Penjelasan Hak Akses (Role)**: Di bagian atas daftar staf, terdapat 4 kartu penjelasan peran dengan ikon halo dan badge warna:
+  - 🛡️ **Owner / Pemilik** (Ungu): Hak akses absolut, kelola cabang, paket SaaS & analitik keuangan.
+  - 👥 **Supervisor** (Biru): Audit kas laci, rekonsiliasi shift & persetujuan void transaksi struk.
+  - 💻 **Kasir (Cashier)** (Hijau): Layanan POS kasir, input pesanan, buka-tutup shift & cetak struk.
+  - 🍳 **Dapur (Kitchen)** (Amber): Pantau antrean masak pesanan secara live di Kitchen Display System (KDS).
+- Klik **"Undang Staf Baru"** untuk membuatkan akun login karyawan baru.
 
 ---
 
 ## 12. Pengaturan Toko, Custom Domain & Paket Langganan SaaS
 
 Buka kelompok menu *PENGATURAN* di sidebar:
-1. **Pengaturan Bisnis (`/app/settings`)**: Ubah nama brand toko, tagline, kontak WhatsApp layanan pelanggan, tarif default PPN (11%), dan teks ucapan terima kasih di bagian bawah struk kasir.
+1. **Pengaturan Bisnis (`/app/settings`)**:
+   - Layout formulir kini didesain sangat lapang dan terstruktur per bagian: **Profil Bisnis & Brand**, **Operasional & Pajak Penjualan (PPN)**, dan **Format Struk Kasir**.
+   - Input nama brand toko, tagline, nomor kontak WhatsApp, tarif pajak persentase, dan ucapan terima kasih pada struk tertata dengan jarak vertikal yang nyaman dibaca dan mudah diedit.
 2. **Domain & Subdomain (`/app/domains`)**:
    - Subdomain gratis bawaan (misal `abdimartabak.abdipos.com`) selalu aktif dengan sertifikat HTTPS aman.
    - Ingin pakai domain toko sendiri? Klik **"Hubungkan Custom Domain"**, ketik domain Anda (misal `order.tokoanda.com`), lalu ikuti panduan mengarahkan DNS CNAME ke `cname.abdipos.com`.

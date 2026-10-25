@@ -21,7 +21,7 @@
 
         <BaseButton variant="primary" size="lg" @click="openCreateModal">
           <template #icon><AppIcon name="plus" :size="18" /></template>
-          + Tambah Kategori Baru
+          Tambah Kategori Baru
         </BaseButton>
       </div>
     </header>
@@ -180,13 +180,15 @@ const confirmDelete = () => {
   font-weight: 800;
   color: var(--text-main);
   letter-spacing: -0.02em;
+  line-height: 1.3;
 }
 
 .page-desc {
   font-size: 14px;
   color: var(--text-secondary);
   max-width: 680px;
-  margin-top: 2px;
+  margin-top: 0.5rem;
+  line-height: 1.6;
 }
 
 .header-actions {

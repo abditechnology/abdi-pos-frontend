@@ -18,82 +18,137 @@
           <AppIcon name="clock" :size="16" />
           Buka Shift Baru
         </BaseButton>
-        <BaseButton
-          v-else
-          variant="danger"
-          size="md"
-          @click="openCloseShiftModal(activeShift)"
-        >
-          <AppIcon name="lock" :size="16" />
-          Tutup Shift Aktif
-        </BaseButton>
       </div>
     </div>
 
-    <!-- Active Shift Highlight Widget -->
+    <!-- Active Shift Highlight Hero Card (Clean White Aesthetic) -->
     <div
       v-if="activeShift"
-      class="active-shift-card bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden"
+      class="shift-hero-card clean-white-card animate-fade-in"
     >
-      <div class="active-shift-glow"></div>
-      <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <div class="inline-flex items-center gap-2 bg-blue-500/30 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            Shift Sedang Berjalan
+      <!-- Hero Header & Cashier Profile -->
+      <div class="hero-top-row">
+        <div class="hero-cashier-info">
+          <div class="cashier-avatar-wrap">
+            <div class="avatar-ring">
+              <span class="avatar-initials">{{ getInitials(activeShift.cashierName) }}</span>
+            </div>
+            <div class="avatar-status-dot" title="Shift Aktif Berjalan"></div>
           </div>
-          <h2 class="text-2xl font-bold">{{ activeShift.cashierName }}</h2>
-          <p class="text-blue-100 text-sm mt-1">
-            Dibuka sejak: <strong class="font-mono text-white">{{ activeShift.openedAt }}</strong> • {{ activeShift.notes }}
-          </p>
+
+          <div class="cashier-details">
+            <div class="status-pill-badge">
+              <span class="pulse-indicator"></span>
+              <span>Shift Sedang Berjalan</span>
+            </div>
+            <h2 class="cashier-name">{{ activeShift.cashierName }}</h2>
+            <div class="shift-meta-chips">
+              <span class="meta-chip">
+                <AppIcon name="clock" :size="14" />
+                Buka sejak: <strong class="font-mono text-slate-800">{{ activeShift.openedAt }}</strong>
+              </span>
+              <span class="meta-divider">•</span>
+              <span class="meta-chip">
+                <AppIcon name="pos" :size="14" />
+                {{ activeShift.notes || 'Kasir Utama' }}
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div class="flex items-center gap-6 bg-white/10 backdrop-blur-md px-5 py-3 rounded-xl border border-white/20">
-          <div>
-            <span class="text-xs text-blue-200 block">Modal Awal Laci</span>
-            <span class="text-lg font-bold font-mono">{{ formatRp(activeShift.startingCash) }}</span>
-          </div>
-          <div class="w-px h-8 bg-white/20"></div>
-          <div>
-            <span class="text-xs text-blue-200 block">Kas Sistem Saat Ini</span>
-            <span class="text-lg font-bold font-mono text-emerald-300">{{ formatRp(activeShift.expectedCash) }}</span>
-          </div>
+        <div class="hero-action-box">
           <BaseButton
-            variant="warning"
-            size="sm"
+            variant="danger"
+            size="lg"
+            class="reconciliation-btn"
             @click="openCloseShiftModal(activeShift)"
           >
-            Rekonsiliasi Kas
+            <template #icon><AppIcon name="lock" :size="18" /></template>
+            Tutup Shift & Rekonsiliasi Kas
           </BaseButton>
+          <span class="action-sub-hint">Hitung uang fisik di laci kasir saat serah terima</span>
+        </div>
+      </div>
+
+      <!-- Shift Key Metrics Grid -->
+      <div class="hero-metrics-grid">
+        <!-- Metric 1: Modal Awal Laci -->
+        <div class="metric-card-item card-amber">
+          <div class="metric-header">
+            <span class="metric-icon-wrap amber">
+              <AppIcon name="pos" :size="17" />
+            </span>
+            <span class="metric-label">Modal Awal Laci</span>
+          </div>
+          <div class="metric-value font-mono">
+            {{ formatRp(activeShift.startingCash) }}
+          </div>
+          <div class="metric-footer">
+            Uang modal kembalian di awal shift
+          </div>
+        </div>
+
+        <!-- Metric 2: Penjualan Kas Masuk -->
+        <div class="metric-card-item card-cyan">
+          <div class="metric-header">
+            <span class="metric-icon-wrap cyan">
+              <AppIcon name="trending-up" :size="17" />
+            </span>
+            <span class="metric-label">Penjualan Kas Masuk</span>
+          </div>
+          <div class="metric-value font-mono text-cyan-val">
+            + {{ formatRp(activeCashSales) }}
+          </div>
+          <div class="metric-footer">
+            Akumulasi uang tunai masuk shift ini
+          </div>
+        </div>
+
+        <!-- Metric 3: Total Kas Sistem (Seharusnya) -->
+        <div class="metric-card-item card-emerald highlight">
+          <div class="metric-header">
+            <span class="metric-icon-wrap emerald">
+              <AppIcon name="dollar" :size="17" />
+            </span>
+            <span class="metric-label">Total Kas Sistem (Seharusnya)</span>
+          </div>
+          <div class="metric-value font-mono text-emerald-val">
+            {{ formatRp(activeShift.expectedCash) }}
+          </div>
+          <div class="metric-footer">
+            Modal laci + Total penjualan tunai
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- Empty State / No Active Shift Card -->
     <div
       v-else
-      class="no-shift-alert bg-amber-50 border border-amber-200 p-4 rounded-xl flex items-center justify-between gap-4"
+      class="no-shift-alert animate-fade-in"
     >
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
-          <AppIcon name="clock" :size="20" />
+      <div class="alert-left-content">
+        <div class="alert-icon-halo">
+          <AppIcon name="clock" :size="24" />
         </div>
         <div>
-          <h3 class="font-semibold text-amber-900 text-sm">Tidak Ada Shift Kasir yang Sedang Aktif</h3>
-          <p class="text-xs text-amber-700 mt-0.5">
+          <h3 class="alert-title">Tidak Ada Shift Kasir yang Sedang Aktif</h3>
+          <p class="alert-desc">
             Pastikan kasir membuka shift baru dan menginput modal kas awal sebelum memulai melayani pesanan di kasir POS.
           </p>
         </div>
       </div>
-      <BaseButton variant="primary" size="sm" @click="openNewShiftModal">
+      <BaseButton variant="primary" size="lg" @click="openNewShiftModal">
+        <template #icon><AppIcon name="clock" :size="18" /></template>
         Buka Shift Sekarang
       </BaseButton>
     </div>
 
     <!-- Shift History Table -->
-    <BaseCard>
-      <div class="card-title-bar mb-4">
-        <h3 class="font-bold text-slate-800 text-base">Riwayat Shift Kasir Terdahulu</h3>
-        <span class="text-xs text-slate-500">Audit pencatatan uang fisik dan selisih kas per pergantian kasir</span>
+    <BaseCard class="mt-6">
+      <div class="card-title-bar mb-6">
+        <h3 class="font-bold text-slate-800 text-lg">Riwayat Shift Kasir Terdahulu</h3>
+        <span class="text-sm text-slate-500 mt-1 block">Audit pencatatan uang fisik dan selisih kas per pergantian kasir</span>
       </div>
 
       <div class="overflow-x-auto">
@@ -200,6 +255,22 @@ const selectedShiftToClose = ref(null)
 const shifts = computed(() => transactionStore.shifts)
 const activeShift = computed(() => transactionStore.currentActiveShift)
 
+const activeCashSales = computed(() => {
+  if (!activeShift.value) return 0
+  const expected = activeShift.value.expectedCash || 0
+  const starting = activeShift.value.startingCash || 0
+  return Math.max(0, expected - starting)
+})
+
+function getInitials(name) {
+  if (!name) return 'K'
+  const parts = name.trim().split(' ')
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase()
+  }
+  return name.slice(0, 2).toUpperCase()
+}
+
 function formatRp(val) {
   if (typeof val !== 'number') return 'Rp 0'
   return new Intl.NumberFormat('id-ID', {
@@ -228,38 +299,362 @@ function handleShiftSaved() {
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .page-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.625rem;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
   color: #0f172a;
+  margin: 0;
 }
 
 .page-subtitle {
-  font-size: 0.875rem;
+  font-size: 0.925rem;
+  line-height: 1.6;
   color: #64748b;
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
 }
 
-.active-shift-card {
+/* ========================================================
+   ACTIVE SHIFT HERO CARD (Clean White Aesthetic)
+======================================================== */
+.shift-hero-card {
   position: relative;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
+  color: #0f172a;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+  margin-bottom: 2rem;
 }
 
-.active-shift-glow {
-  position: absolute;
-  top: -50px;
-  right: -50px;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+/* Top Row: Cashier Profile & Actions */
+.hero-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.hero-cashier-info {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.cashier-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar-ring {
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
-  pointer-events: none;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.avatar-initials {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+}
+
+.avatar-status-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  background-color: #10b981;
+  border: 2.5px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+.status-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 11px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #047857;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 9999px;
+  margin-bottom: 6px;
+}
+
+.pulse-indicator {
+  width: 7px;
+  height: 7px;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0.65;
+  }
+}
+
+.cashier-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.shift-meta-chips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.meta-divider {
+  color: #cbd5e1;
+}
+
+.hero-action-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.reconciliation-btn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid #b91c1c !important;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3) !important;
+  font-weight: 700 !important;
+}
+
+.reconciliation-btn:hover {
+  background: linear-gradient(135deg, #f87171 0%, #ef4444 100%) !important;
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.4) !important;
+  transform: translateY(-1px);
+}
+
+.action-sub-hint {
+  font-size: 11.5px;
+  color: #64748b;
+}
+
+/* Hero Metrics 3-Card Grid */
+.hero-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.metric-card-item {
+  border-radius: 14px;
+  padding: 1.25rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all var(--duration-fast) ease;
+}
+
+.metric-card-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+/* Card 1: Modal Awal Laci */
+.metric-card-item.card-amber {
+  background: #fffdf7;
+  border: 1px solid #fef3c7;
+}
+
+/* Card 2: Penjualan Kas Masuk */
+.metric-card-item.card-cyan {
+  background: #f0fdfa;
+  border: 1px solid #ccfbf1;
+}
+
+/* Card 3: Total Kas Sistem (Seharusnya) */
+.metric-card-item.card-emerald {
+  background: #f0fdf4;
+  border: 1.5px solid #bbf7d0;
+}
+
+.metric-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.metric-icon-wrap {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metric-icon-wrap.amber {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.metric-icon-wrap.cyan {
+  background: #ccfbf1;
+  color: #0d9488;
+}
+
+.metric-icon-wrap.emerald {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.metric-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.card-amber .metric-label {
+  color: #92400e;
+}
+
+.card-cyan .metric-label {
+  color: #0f766e;
+}
+
+.card-emerald .metric-label {
+  color: #15803d;
+}
+
+.metric-value {
+  font-size: 1.55rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-top: 4px;
+}
+
+.card-amber .metric-value {
+  color: #0f172a;
+}
+
+.card-cyan .metric-value {
+  color: #0d9488;
+}
+
+.card-emerald .metric-value {
+  color: #15803d;
+}
+
+.metric-footer {
+  font-size: 11.5px;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+.card-amber .metric-footer {
+  color: #b45309;
+}
+
+.card-cyan .metric-footer {
+  color: #115e59;
+}
+
+.card-emerald .metric-footer {
+  color: #166534;
+  font-weight: 600;
+}
+
+/* ========================================================
+   EMPTY STATE / NO SHIFT ALERT
+======================================================== */
+.no-shift-alert {
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.08);
+}
+
+.alert-left-content {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.alert-icon-halo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #fef3c7;
+  color: #d97706;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.alert-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #78350f;
+  margin: 0;
+}
+
+.alert-desc {
+  font-size: 0.875rem;
+  color: #92400e;
+  margin-top: 0.25rem;
+  line-height: 1.5;
+}
+
+/* ========================================================
+   SHIFT HISTORY TABLE
+======================================================== */
 .card-title-bar {
   display: flex;
   flex-direction: column;
@@ -275,20 +670,45 @@ function handleShiftSaved() {
   background: #f8fafc;
   color: #475569;
   font-weight: 600;
-  padding: 0.75rem 1rem;
+  padding: 0.9rem 1.25rem;
   border-bottom: 1px solid #e2e8f0;
   text-align: left;
   white-space: nowrap;
 }
 
 .data-table td {
-  padding: 0.875rem 1rem;
+  padding: 1rem 1.25rem;
   border-bottom: 1px solid #f1f5f9;
   vertical-align: middle;
 }
 
 .empty-state {
   text-align: center;
-  padding: 2.5rem 1rem;
+  padding: 3rem 1rem;
+}
+
+@media (max-width: 900px) {
+  .hero-top-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .hero-action-box {
+    align-items: flex-start;
+    width: 100%;
+  }
+  .reconciliation-btn {
+    width: 100%;
+  }
+  .hero-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  .no-shift-alert {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .alert-left-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 </style>

@@ -2,7 +2,7 @@
   <div class="orders-page space-y-6">
     <!-- Header -->
     <div class="page-header">
-      <div>
+      <div class="header-text-wrap">
         <h1 class="page-title">Pesanan Self-Order & Meja</h1>
         <p class="page-subtitle">
           Kitchen Display System (KDS) live kanban, antrean masak dapur, dan pengaturan kode QR meja pelanggan.
@@ -28,16 +28,6 @@
             Daftar Meja & QR
           </button>
         </div>
-
-        <BaseButton
-          v-if="activeTab === 'tables'"
-          variant="primary"
-          size="md"
-          @click="openAddTableModal"
-        >
-          <AppIcon name="plus" :size="16" />
-          Tambah Meja Baru
-        </BaseButton>
       </div>
     </div>
 
@@ -238,8 +228,23 @@
     </div>
 
     <!-- TAB 2: TABLE & QR MANAGEMENT -->
-    <div v-else class="space-y-4">
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div v-else class="tables-view-wrap space-y-6">
+      <div class="tables-toolbar-bar">
+        <div>
+          <h3 class="tables-section-title">Kelola Meja & Standee QR Meja</h3>
+          <p class="tables-section-sub">Atur nomor meja makan, kapasitas kursi, dan cetak stand akrilik QR untuk pemesanan mandiri</p>
+        </div>
+        <BaseButton
+          variant="primary"
+          size="md"
+          @click="openAddTableModal"
+        >
+          <AppIcon name="plus" :size="16" />
+          Tambah Meja Baru
+        </BaseButton>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         <BaseCard
           v-for="table in orderStore.tables"
           :key="table.id"
@@ -413,27 +418,35 @@ function handleTableSaved() {
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.header-text-wrap {
+  flex: 1;
 }
 
 .page-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.625rem;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
   color: #0f172a;
+  margin: 0;
 }
 
 .page-subtitle {
-  font-size: 0.875rem;
+  font-size: 0.925rem;
+  line-height: 1.6;
   color: #64748b;
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 .view-tabs {
@@ -442,6 +455,32 @@ function handleTableSaved() {
   padding: 4px;
   border-radius: var(--radius-lg);
   border: 1px solid #e2e8f0;
+}
+
+.tables-toolbar-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.tables-section-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.tables-section-sub {
+  font-size: 0.825rem;
+  line-height: 1.5;
+  color: #64748b;
+  margin-top: 0.25rem;
 }
 
 .tab-btn {

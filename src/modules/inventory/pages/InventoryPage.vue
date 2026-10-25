@@ -15,28 +15,43 @@
 
       <BaseButton variant="primary" size="lg" @click="openCreateModal">
         <template #icon><AppIcon name="plus" :size="18" /></template>
-        + Tambah Bahan Baru
+        Tambah Bahan Baru
       </BaseButton>
     </header>
 
-    <!-- 3 Inventory Metrics -->
-    <div class="metrics-grid">
-      <div class="metric-card base-card card-bordered">
-        <span class="m-label">Total Jenis Bahan</span>
-        <strong class="m-val">{{ inventoryStore.scopedMaterials.length }}</strong>
-        <span class="m-sub">Tercatat di cabang aktif</span>
+    <!-- 3 Inventory Metrics (Cards with Colored Halo Icons) -->
+    <div class="metrics-grid-3">
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-blue">
+          <AppIcon name="boxes" :size="24" />
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Total Jenis Bahan</span>
+          <span class="stat-value">{{ inventoryStore.scopedMaterials.length }} Bahan</span>
+          <span class="stat-sub">Tercatat di cabang aktif</span>
+        </div>
       </div>
 
-      <div class="metric-card base-card card-bordered">
-        <span class="m-label">Stok Kritis / Perlu Belanja</span>
-        <strong class="m-val text-danger">{{ inventoryStore.lowStockCount }}</strong>
-        <span class="m-sub">Di bawah batas minimum</span>
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-rose">
+          <AppIcon name="alert-circle" :size="24" />
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Stok Kritis / Perlu Belanja</span>
+          <span class="stat-value text-rose-600">{{ inventoryStore.lowStockCount }} Bahan</span>
+          <span class="stat-sub">Di bawah batas minimum aman</span>
+        </div>
       </div>
 
-      <div class="metric-card base-card card-bordered">
-        <span class="m-label">Estimasi Nilai Inventaris</span>
-        <strong class="m-val text-primary-700">Rp {{ formatNumber(inventoryStore.totalValue) }}</strong>
-        <span class="m-sub">Aset persediaan bahan</span>
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-emerald">
+          <AppIcon name="dollar" :size="24" />
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Estimasi Nilai Inventaris</span>
+          <span class="stat-value font-mono text-emerald-700">Rp {{ formatNumber(inventoryStore.totalValue) }}</span>
+          <span class="stat-sub">Total nilai aset persediaan</span>
+        </div>
       </div>
     </div>
 
@@ -306,45 +321,15 @@ const confirmDelete = () => {
   font-weight: 800;
   color: var(--text-main);
   letter-spacing: -0.02em;
+  line-height: 1.3;
 }
 
 .page-desc {
   font-size: 14px;
   color: var(--text-secondary);
   max-width: 680px;
-  margin-top: 2px;
-}
-
-.metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.metric-card {
-  padding: 18px 20px;
-  border-radius: var(--radius-lg);
-  background-color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.m-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-muted);
-}
-
-.m-val {
-  font-size: 26px;
-  font-weight: 800;
-  color: var(--text-main);
-}
-
-.m-sub {
-  font-size: 11.5px;
-  color: var(--text-secondary);
+  margin-top: 0.5rem;
+  line-height: 1.6;
 }
 
 .filter-bar {

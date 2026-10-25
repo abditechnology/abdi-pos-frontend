@@ -192,6 +192,28 @@ Seluruh token visual dikelola di `src/shared/styles/design-system.css`.
 --danger-500:  #ef4444;   /* Rose Red (Void / Pembatalan / Kritis) */
 ```
 
+### Standar Vertikal Layout & Ritme Spasi (*Vertical Spacing & Layout Rhythm*)
+Untuk menjaga konsistensi visual di seluruh halaman tanpa berdesakan (*cramped layouts*), gunakan token dan aturan berikut:
+1. **Vertical Rhythm Utilities (`.space-y-*`)**:
+   - Diterapkan pada kontainer halaman menggunakan pemilih *lobotomized owl* (`.space-y-6 > * + * { margin-top: 1.75rem; }` dan `.space-y-4 > * + * { margin-top: 1.25rem; }`).
+2. **Page Header Standard**:
+   - `.page-header`: Memiliki `margin-bottom: 2rem` dengan `display: flex; justify-content: space-between; align-items: flex-start; gap: 1.5rem;`.
+   - `.page-title`: `font-size: 1.625rem; font-weight: 800; line-height: 1.3;`.
+   - `.page-subtitle`: `font-size: 0.925rem; line-height: 1.6; margin-top: 0.5rem; color: #64748b;`.
+3. **Form & Input Rhythm (`/app/settings` & Modals)**:
+   - `.form-group`: Wajib memiliki `margin-bottom: 1.5rem` dengan `gap: 0.5rem` antara label dan input.
+   - `.form-grid-2`: Menggunakan `gap: 1.5rem; margin-bottom: 1.5rem;` untuk memisahkan baris form dua kolom.
+   - `.form-input` & `.form-textarea`: Memiliki padding lega `0.75rem 1rem` dengan `line-height: 1.5` agar teks tidak terpotong.
+4. **Stable Tab Navigation (Pattern `OrdersPage.vue`)**:
+   - Navigasi tab tingkat atas diletakkan eksklusif di dalam `.header-actions` tanpa mencampur tombol aksi kondisional agar posisi tab tidak pernah terdorong (*wrapped down*) saat berpindah tab.
+   - Tombol aksi spesifik tab (seperti *Tambah Meja Baru*) ditempatkan di dalam toolbar internal view terkait (`.tables-toolbar-bar`).
+5. **Hero Status & Contextual Cards (Pattern `ShiftsPage.vue`)**:
+   - Hero card shift kasir (`.shift-hero-card`) menggunakan estetika *Clean White Surface* berbingkai halus (`#ffffff`, border `#e2e8f0`) dengan bayangan elevasi lembut agar menyatu bersih dengan latar aplikasi.
+   - Dilengkapi avatar ring kasir, live status badge emerald (`#ecfdf5`), tombol aksi tutup shift bertema *High-Contrast Vibrant Red* (`#ef4444`) yang terlihat jelas tanpa tabrakan warna, serta 3 sub-kartu metrik terpisah (`card-amber`, `card-cyan`, `card-emerald`) sehingga angka kas dan label tidak berdesakan (*zero inline cramming*).
+6. **Unified Standard Stat Card System (`.stat-card` & `.stat-icon-halo`)**:
+   - Seluruh ringkasan metrik di bagian atas halaman (Transaksi, Produk, Inventaris, Pelanggan, Promosi, Laporan Keuangan, serta Peran Staf & Kartu Cabang) kini distandardisasi menggunakan kartu putih bersih (`.stat-card`) dengan efek *hover-lift*, dipadukan dengan *Colored Halo Icons* (`.halo-blue`, `.halo-emerald`, `.halo-amber`, `.halo-purple`, `.halo-rose`, `.halo-cyan`, `.halo-indigo`).
+   - Meniadakan teks telanjang tanpa kontainer, mengeliminasi duplikasi tanda tambah `+` pada tombol aksi, dan menyatukan estetika visual antar-modul agar setara dengan keindahan halaman Kategori Produk dan Shift Kasir.
+
 ### Animasi & Interaksi (*Motion Guidelines*)
 - Gunakan kurva pegas: `var(--ease-spring)` atau `cubic-bezier(0.16, 1, 0.3, 1)`.
 - Semua tombol wajib memiliki efek tekan `active: scale(0.97)` agar terasa taktil dan responsif.

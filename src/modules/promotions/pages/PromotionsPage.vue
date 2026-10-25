@@ -17,45 +17,49 @@
       </div>
     </div>
 
-    <!-- Metrics Grid -->
-    <div class="metrics-grid">
-      <div class="metric-card bg-emerald-50/60 border-emerald-100">
-        <div class="metric-icon-box bg-emerald-600 text-white">
-          <AppIcon name="percent" :size="20" />
+    <!-- Metrics Grid (Consistent Modern Cards with Colored Halo Icons) -->
+    <div class="metrics-grid-4">
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-emerald">
+          <AppIcon name="percent" :size="24" />
         </div>
-        <div class="metric-info">
-          <span class="metric-label">Promo Aktif Berjalan</span>
-          <span class="metric-value text-emerald-900">{{ promoStore.activePromotions.length }} Program</span>
-        </div>
-      </div>
-
-      <div class="metric-card bg-blue-50/60 border-blue-100">
-        <div class="metric-icon-box bg-blue-600 text-white">
-          <AppIcon name="gift" :size="20" />
-        </div>
-        <div class="metric-info">
-          <span class="metric-label">Total Klaim Voucher</span>
-          <span class="metric-value text-blue-900">{{ promoStore.totalUsages }} Kali</span>
+        <div class="stat-body">
+          <span class="stat-label">Promo Aktif Berjalan</span>
+          <span class="stat-value">{{ promoStore.activePromotions.length }} Program</span>
+          <span class="stat-sub">Bisa diklaim di kasir POS</span>
         </div>
       </div>
 
-      <div class="metric-card bg-amber-50/60 border-amber-100">
-        <div class="metric-icon-box bg-amber-500 text-white">
-          <AppIcon name="sparkles" :size="20" />
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-blue">
+          <AppIcon name="gift" :size="24" />
         </div>
-        <div class="metric-info">
-          <span class="metric-label">Paket Bundling & Tebus</span>
-          <span class="metric-value text-amber-900">{{ specialPromoCount }} Paket</span>
+        <div class="stat-body">
+          <span class="stat-label">Total Klaim Voucher</span>
+          <span class="stat-value font-mono">{{ promoStore.totalUsages }} Kali</span>
+          <span class="stat-sub">Kupon digunakan pelanggan</span>
         </div>
       </div>
 
-      <div class="metric-card bg-purple-50/60 border-purple-100">
-        <div class="metric-icon-box bg-purple-600 text-white">
-          <AppIcon name="clock" :size="20" />
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-amber">
+          <AppIcon name="sparkles" :size="24" />
         </div>
-        <div class="metric-info">
-          <span class="metric-label">Segera Berakhir (30 Hari)</span>
-          <span class="metric-value text-purple-900">{{ expiringCount }} Promo</span>
+        <div class="stat-body">
+          <span class="stat-label">Paket Bundling & Tebus</span>
+          <span class="stat-value">{{ specialPromoCount }} Paket</span>
+          <span class="stat-sub">Menu bundling hemat</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-purple">
+          <AppIcon name="clock" :size="24" />
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Segera Berakhir (30 Hari)</span>
+          <span class="stat-value">{{ expiringCount }} Promo</span>
+          <span class="stat-sub">Mendekati batas promo</span>
         </div>
       </div>
     </div>
@@ -299,41 +303,46 @@ function handlePromoSaved() {
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .page-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.625rem;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
   color: #0f172a;
+  margin: 0;
 }
 
 .page-subtitle {
-  font-size: 0.875rem;
+  font-size: 0.925rem;
+  line-height: 1.6;
   color: #64748b;
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
 }
 
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
 }
 
 .metric-card {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1.25rem;
+  gap: 1.25rem;
+  padding: 1.5rem;
   border-radius: var(--radius-lg);
   border-width: 1px;
 }
 
 .metric-icon-box {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -347,15 +356,17 @@ function handlePromoSaved() {
 }
 
 .metric-label {
-  font-size: 0.775rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: #64748b;
+  margin-bottom: 0.25rem;
 }
 
 .metric-value {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.35rem;
+  font-weight: 800;
   font-family: monospace;
+  line-height: 1.3;
 }
 
 .table-toolbar {

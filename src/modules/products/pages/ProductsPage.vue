@@ -21,29 +21,44 @@
 
         <BaseButton variant="primary" size="lg" @click="openCreateModal">
           <template #icon><AppIcon name="plus" :size="18" /></template>
-          + Tambah Produk Baru
+          Tambah Produk Baru
         </BaseButton>
       </div>
     </header>
 
-    <!-- 3 Quick Metrics -->
-    <div class="metrics-grid">
-      <div class="metric-card base-card card-bordered">
-        <span class="m-label">Total Item Menu</span>
-        <strong class="m-val">{{ productStore.totalProducts }}</strong>
-        <span class="m-sub">Tersedia di sistem</span>
+    <!-- 3 Quick Metrics (Cards with Colored Halo Icons) -->
+    <div class="metrics-grid-3">
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-blue">
+          <AppIcon name="package" :size="24" />
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Total Item Menu</span>
+          <span class="stat-value">{{ productStore.totalProducts }} Item</span>
+          <span class="stat-sub">Tersedia di katalog sistem</span>
+        </div>
       </div>
 
-      <div class="metric-card base-card card-bordered">
-        <span class="m-label">Menu Aktif Dijual</span>
-        <strong class="m-val text-success">{{ productStore.activeProducts }}</strong>
-        <span class="m-sub">Tampil di layar kasir</span>
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-emerald">
+          <AppIcon name="check" :size="24" />
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Menu Aktif Dijual</span>
+          <span class="stat-value text-emerald-600">{{ productStore.activeProducts }} Item</span>
+          <span class="stat-sub">Tampil di layar kasir POS</span>
+        </div>
       </div>
 
-      <div class="metric-card base-card card-bordered">
-        <span class="m-label">Perlu Tambah Stok</span>
-        <strong class="m-val text-warning">{{ productStore.lowStockProducts }}</strong>
-        <span class="m-sub">Stok di bawah 20 porsi</span>
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-amber">
+          <AppIcon name="alert-circle" :size="24" />
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Perlu Tambah Stok</span>
+          <span class="stat-value text-amber-600">{{ productStore.lowStockProducts }} Menu</span>
+          <span class="stat-sub">Stok di bawah 20 porsi</span>
+        </div>
       </div>
     </div>
 
@@ -312,13 +327,15 @@ const confirmDelete = () => {
   font-weight: 800;
   color: var(--text-main);
   letter-spacing: -0.02em;
+  line-height: 1.3;
 }
 
 .page-desc {
   font-size: 14px;
   color: var(--text-secondary);
   max-width: 680px;
-  margin-top: 2px;
+  margin-top: 0.5rem;
+  line-height: 1.6;
 }
 
 .header-actions {
@@ -346,39 +363,6 @@ const confirmDelete = () => {
   border-color: var(--primary-500);
   color: var(--primary-600);
   background-color: var(--primary-50);
-}
-
-/* Metrics Grid */
-.metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.metric-card {
-  padding: 18px 20px;
-  border-radius: var(--radius-lg);
-  background-color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.m-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-muted);
-}
-
-.m-val {
-  font-size: 26px;
-  font-weight: 800;
-  color: var(--text-main);
-}
-
-.m-sub {
-  font-size: 11.5px;
-  color: var(--text-secondary);
 }
 
 /* Filter Bar */

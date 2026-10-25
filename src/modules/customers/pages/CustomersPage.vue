@@ -17,45 +17,49 @@
       </div>
     </div>
 
-    <!-- Metrics Cards -->
-    <div class="metrics-grid">
-      <div class="metric-card bg-blue-50/60 border-blue-100">
-        <div class="metric-icon-box bg-blue-600 text-white">
-          <AppIcon name="users" :size="20" />
+    <!-- Metrics Cards (Cards with Colored Halo Icons) -->
+    <div class="metrics-grid-4">
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-blue">
+          <AppIcon name="users" :size="24" />
         </div>
-        <div class="metric-info">
-          <span class="metric-label">Total Pelanggan</span>
-          <span class="metric-value text-blue-900">{{ customers.length }} Orang</span>
-        </div>
-      </div>
-
-      <div class="metric-card bg-amber-50/60 border-amber-100">
-        <div class="metric-icon-box bg-amber-500 text-white">
-          <AppIcon name="gift" :size="20" />
-        </div>
-        <div class="metric-info">
-          <span class="metric-label">Total Poin Beredar</span>
-          <span class="metric-value text-amber-900">{{ customerStore.totalPointsCirculating }} Pts</span>
+        <div class="stat-body">
+          <span class="stat-label">Total Pelanggan</span>
+          <span class="stat-value">{{ customers.length }} Orang</span>
+          <span class="stat-sub">Member terdaftar di sistem</span>
         </div>
       </div>
 
-      <div class="metric-card bg-emerald-50/60 border-emerald-100">
-        <div class="metric-icon-box bg-emerald-600 text-white">
-          <AppIcon name="dollar" :size="20" />
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-amber">
+          <AppIcon name="gift" :size="24" />
         </div>
-        <div class="metric-info">
-          <span class="metric-label">Total Belanja Member</span>
-          <span class="metric-value text-emerald-900">{{ formatRp(totalMemberSpent) }}</span>
+        <div class="stat-body">
+          <span class="stat-label">Total Poin Beredar</span>
+          <span class="stat-value font-mono">{{ customerStore.totalPointsCirculating }} Pts</span>
+          <span class="stat-sub">Saldo poin reward aktif</span>
         </div>
       </div>
 
-      <div class="metric-card bg-purple-50/60 border-purple-100">
-        <div class="metric-icon-box bg-purple-600 text-white">
-          <AppIcon name="shield" :size="20" />
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-emerald">
+          <AppIcon name="dollar" :size="24" />
         </div>
-        <div class="metric-info">
-          <span class="metric-label">Member VIP (Platinum)</span>
-          <span class="metric-value text-purple-900">{{ platinumCount }} Member</span>
+        <div class="stat-body">
+          <span class="stat-label">Total Belanja Member</span>
+          <span class="stat-value font-mono">{{ formatRp(totalMemberSpent) }}</span>
+          <span class="stat-sub">Akumulasi transaksi member</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-purple">
+          <AppIcon name="shield" :size="24" />
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Member VIP (Platinum)</span>
+          <span class="stat-value">{{ platinumCount }} Member</span>
+          <span class="stat-sub">Tingkatan tier tertinggi</span>
         </div>
       </div>
     </div>
@@ -275,41 +279,46 @@ function handleCustomerSaved() {
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .page-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.625rem;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
   color: #0f172a;
+  margin: 0;
 }
 
 .page-subtitle {
-  font-size: 0.875rem;
+  font-size: 0.925rem;
+  line-height: 1.6;
   color: #64748b;
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
 }
 
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
 }
 
 .metric-card {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1.25rem;
+  gap: 1.25rem;
+  padding: 1.5rem;
   border-radius: var(--radius-lg);
   border-width: 1px;
 }
 
 .metric-icon-box {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -323,15 +332,17 @@ function handleCustomerSaved() {
 }
 
 .metric-label {
-  font-size: 0.775rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: #64748b;
+  margin-bottom: 0.25rem;
 }
 
 .metric-value {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.35rem;
+  font-weight: 800;
   font-family: monospace;
+  line-height: 1.3;
 }
 
 .table-toolbar {

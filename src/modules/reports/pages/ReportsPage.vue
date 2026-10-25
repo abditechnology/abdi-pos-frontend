@@ -30,49 +30,49 @@
       </div>
     </div>
 
-    <!-- Financial Summary Cards -->
-    <div class="metrics-grid">
-      <div class="metric-card bg-blue-50/60 border-blue-100">
-        <div class="metric-icon-box bg-blue-600 text-white">
-          <AppIcon name="dollar" :size="20" />
+    <!-- Financial Summary Cards (Consistent Modern Cards with Colored Halo Icons) -->
+    <div class="metrics-grid-4">
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-blue">
+          <AppIcon name="dollar" :size="24" />
         </div>
-        <div class="metric-info">
-          <span class="metric-label">Total Omset Kotor</span>
-          <span class="metric-value text-blue-900">{{ formatRp(summaryData.grossSales) }}</span>
-          <span class="text-[11px] text-emerald-600 font-semibold mt-0.5">↑ +14.2% dibanding periode lalu</span>
-        </div>
-      </div>
-
-      <div class="metric-card bg-emerald-50/60 border-emerald-100">
-        <div class="metric-icon-box bg-emerald-600 text-white">
-          <AppIcon name="trending-up" :size="20" />
-        </div>
-        <div class="metric-info">
-          <span class="metric-label">Estimasi Laba Kotor (Gross Profit)</span>
-          <span class="metric-value text-emerald-900">{{ formatRp(summaryData.grossProfit) }}</span>
-          <span class="text-[11px] text-slate-500 mt-0.5">Margin laba kotor ~56.4%</span>
+        <div class="stat-body">
+          <span class="stat-label">Total Omset Kotor</span>
+          <span class="stat-value font-mono">{{ formatRp(summaryData.grossSales) }}</span>
+          <span class="stat-sub text-emerald-600 font-semibold">↑ +14.2% vs periode lalu</span>
         </div>
       </div>
 
-      <div class="metric-card bg-amber-50/60 border-amber-100">
-        <div class="metric-icon-box bg-amber-500 text-white">
-          <AppIcon name="percent" :size="20" />
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-emerald">
+          <AppIcon name="trending-up" :size="24" />
         </div>
-        <div class="metric-info">
-          <span class="metric-label">Total Diskon Diberikan</span>
-          <span class="metric-value text-amber-900">{{ formatRp(summaryData.totalDiscounts) }}</span>
-          <span class="text-[11px] text-slate-500 mt-0.5">Dari program voucher & promo</span>
+        <div class="stat-body">
+          <span class="stat-label">Estimasi Laba Kotor</span>
+          <span class="stat-value font-mono text-emerald-600">{{ formatRp(summaryData.grossProfit) }}</span>
+          <span class="stat-sub">Margin laba kotor ~56.4%</span>
         </div>
       </div>
 
-      <div class="metric-card bg-slate-50 border-slate-200">
-        <div class="metric-icon-box bg-slate-700 text-white">
-          <AppIcon name="receipt" :size="20" />
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-amber">
+          <AppIcon name="percent" :size="24" />
         </div>
-        <div class="metric-info">
-          <span class="metric-label">PPN 11% Terkumpul</span>
-          <span class="metric-value text-slate-800">{{ formatRp(summaryData.totalTax) }}</span>
-          <span class="text-[11px] text-slate-500 mt-0.5">Kewajiban setoran pajak</span>
+        <div class="stat-body">
+          <span class="stat-label">Total Diskon Diberikan</span>
+          <span class="stat-value font-mono text-amber-600">{{ formatRp(summaryData.totalDiscounts) }}</span>
+          <span class="stat-sub">Dari program voucher & promo</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-halo halo-purple">
+          <AppIcon name="receipt" :size="24" />
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">PPN 11% Terkumpul</span>
+          <span class="stat-value font-mono">{{ formatRp(summaryData.totalTax) }}</span>
+          <span class="stat-sub">Kewajiban setoran pajak</span>
         </div>
       </div>
     </div>
@@ -344,21 +344,25 @@ function downloadReportCSV() {
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .page-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.625rem;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
   color: #0f172a;
+  margin: 0;
 }
 
 .page-subtitle {
-  font-size: 0.875rem;
+  font-size: 0.925rem;
+  line-height: 1.6;
   color: #64748b;
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
 }
 
 .header-actions {
@@ -366,19 +370,20 @@ function downloadReportCSV() {
   align-items: center;
   gap: 0.75rem;
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .date-preset-pills {
   display: flex;
   background: #f1f5f9;
-  padding: 3px;
+  padding: 4px;
   border-radius: var(--radius-lg);
   border: 1px solid #e2e8f0;
 }
 
 .pill-btn {
-  padding: 0.4rem 0.75rem;
-  font-size: 0.775rem;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: #64748b;
   border: none;
@@ -394,48 +399,6 @@ function downloadReportCSV() {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
-}
-
-.metric-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.25rem;
-  border-radius: var(--radius-lg);
-  border-width: 1px;
-}
-
-.metric-icon-box {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.metric-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.metric-label {
-  font-size: 0.775rem;
-  font-weight: 600;
-  color: #64748b;
-}
-
-.metric-value {
-  font-size: 1.25rem;
-  font-weight: 700;
-  font-family: monospace;
-}
-
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -446,14 +409,14 @@ function downloadReportCSV() {
   background: #f8fafc;
   color: #475569;
   font-weight: 600;
-  padding: 0.75rem 1rem;
+  padding: 0.9rem 1.25rem;
   border-bottom: 1px solid #e2e8f0;
   text-align: left;
   white-space: nowrap;
 }
 
 .data-table td {
-  padding: 0.875rem 1rem;
+  padding: 1rem 1.25rem;
   border-bottom: 1px solid #f1f5f9;
   vertical-align: middle;
 }

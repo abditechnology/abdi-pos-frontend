@@ -17,28 +17,63 @@
       </div>
     </div>
 
-    <!-- Role Explanation Banner -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-      <div class="p-3 bg-purple-50 rounded-xl border border-purple-100">
-        <span class="text-xs font-bold text-purple-700 block">Owner / Pemilik</span>
-        <span class="text-[11px] text-purple-600 mt-0.5 block">Hak akses absolut, langganan & keuangan</span>
+    <!-- Role Explanation Cards (Clean Modern Cards with Role Halo Icons) -->
+    <div class="metrics-grid-4">
+      <div class="stat-card role-card">
+        <div class="stat-icon-halo halo-purple">
+          <AppIcon name="shield" :size="24" />
+        </div>
+        <div class="stat-body">
+          <div class="role-header-line">
+            <span class="role-title">Owner / Pemilik</span>
+            <span class="role-tag-badge tag-purple">Akses Penuh</span>
+          </div>
+          <span class="stat-sub">Hak akses absolut, kelola cabang, paket SaaS & analitik keuangan</span>
+        </div>
       </div>
-      <div class="p-3 bg-blue-50 rounded-xl border border-blue-100">
-        <span class="text-xs font-bold text-blue-700 block">Supervisor</span>
-        <span class="text-[11px] text-blue-600 mt-0.5 block">Audit kas, rekonsiliasi shift & void struk</span>
+
+      <div class="stat-card role-card">
+        <div class="stat-icon-halo halo-blue">
+          <AppIcon name="users" :size="24" />
+        </div>
+        <div class="stat-body">
+          <div class="role-header-line">
+            <span class="role-title">Supervisor</span>
+            <span class="role-tag-badge tag-blue">Otorisasi Kas</span>
+          </div>
+          <span class="stat-sub">Audit laci, rekonsiliasi shift & persetujuan void transaksi</span>
+        </div>
       </div>
-      <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100">
-        <span class="text-xs font-bold text-emerald-700 block">Kasir (Cashier)</span>
-        <span class="text-[11px] text-emerald-600 mt-0.5 block">POS kasir, buat order & cetak struk</span>
+
+      <div class="stat-card role-card">
+        <div class="stat-icon-halo halo-emerald">
+          <AppIcon name="pos" :size="24" />
+        </div>
+        <div class="stat-body">
+          <div class="role-header-line">
+            <span class="role-title">Kasir (Cashier)</span>
+            <span class="role-tag-badge tag-emerald">Layanan POS</span>
+          </div>
+          <span class="stat-sub">Operasional kasir, input pesanan, buka-tutup shift & cetak struk</span>
+        </div>
       </div>
-      <div class="p-3 bg-amber-50 rounded-xl border border-amber-100">
-        <span class="text-xs font-bold text-amber-700 block">Dapur (Kitchen)</span>
-        <span class="text-[11px] text-amber-600 mt-0.5 block">Kitchen Display System (KDS) live</span>
+
+      <div class="stat-card role-card">
+        <div class="stat-icon-halo halo-amber">
+          <AppIcon name="cart" :size="24" />
+        </div>
+        <div class="stat-body">
+          <div class="role-header-line">
+            <span class="role-title">Dapur (Kitchen)</span>
+            <span class="role-tag-badge tag-amber">Display KDS</span>
+          </div>
+          <span class="stat-sub">Pantau antrean masak pesanan secara live di Kitchen Display</span>
+        </div>
       </div>
     </div>
 
     <!-- Staff Table Section -->
-    <BaseCard>
+    <BaseCard class="mt-6">
       <div class="table-toolbar">
         <div class="search-box">
           <AppIcon name="search" :size="18" class="search-icon" />
@@ -240,21 +275,25 @@ function handleStaffSaved() {
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .page-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.625rem;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
   color: #0f172a;
+  margin: 0;
 }
 
 .page-subtitle {
-  font-size: 0.875rem;
+  font-size: 0.925rem;
+  line-height: 1.6;
   color: #64748b;
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
 }
 
 .table-toolbar {
@@ -263,7 +302,7 @@ function handleStaffSaved() {
   align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .search-box {
@@ -282,7 +321,7 @@ function handleStaffSaved() {
 
 .search-input {
   width: 100%;
-  padding: 0.55rem 0.75rem 0.55rem 2.25rem;
+  padding: 0.65rem 0.85rem 0.65rem 2.4rem;
   border: 1px solid #cbd5e1;
   border-radius: var(--radius-md);
   font-size: 0.875rem;
@@ -300,7 +339,7 @@ function handleStaffSaved() {
 }
 
 .filter-select {
-  padding: 0.55rem 0.75rem;
+  padding: 0.65rem 0.85rem;
   border: 1px solid #cbd5e1;
   border-radius: var(--radius-md);
   font-size: 0.875rem;
@@ -317,14 +356,14 @@ function handleStaffSaved() {
   background: #f8fafc;
   color: #475569;
   font-weight: 600;
-  padding: 0.75rem 1rem;
+  padding: 0.9rem 1.25rem;
   border-bottom: 1px solid #e2e8f0;
   text-align: left;
   white-space: nowrap;
 }
 
 .data-table td {
-  padding: 0.875rem 1rem;
+  padding: 1rem 1.25rem;
   border-bottom: 1px solid #f1f5f9;
   vertical-align: middle;
 }
@@ -380,4 +419,37 @@ function handleStaffSaved() {
   text-align: center;
   padding: 3rem 1rem;
 }
+
+/* Role Explanation Cards */
+.role-card {
+  align-items: flex-start;
+  padding: 1.25rem 1.35rem;
+}
+
+.role-header-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.role-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.role-tag-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  letter-spacing: 0.02em;
+}
+
+.tag-purple { background: #faf5ff; color: #7c3aed; border: 1px solid #e9d5ff; }
+.tag-blue { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+.tag-emerald { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+.tag-amber { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
 </style>

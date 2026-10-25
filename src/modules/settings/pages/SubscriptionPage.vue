@@ -208,6 +208,17 @@ function downloadInvoice(inv) {
   margin-top: 0.25rem;
 }
 
+.active-plan-card {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #4338ca 100%);
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
+  color: #ffffff;
+  box-shadow: 0 16px 36px -10px rgba(30, 58, 138, 0.35);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
 .data-table {
   width: 100%;
   border-collapse: collapse;

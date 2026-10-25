@@ -44,7 +44,7 @@ const props = defineProps({
   variant: {
     type: String,
     default: 'primary',
-    validator: (v) => ['primary', 'secondary', 'outline', 'ghost', 'danger', 'success'].includes(v)
+    validator: (v) => ['primary', 'secondary', 'outline', 'ghost', 'danger', 'success', 'warning'].includes(v)
   },
   size: {
     type: String,
@@ -217,6 +217,19 @@ const handleClick = (e) => {
 .btn-success:hover:not(:disabled) {
   background: linear-gradient(135deg, #34d399 0%, var(--success-500) 100%);
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+  transform: translateY(-1px);
+}
+
+/* 7. Warning / Amber */
+.btn-warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #ffffff;
+  border: 1px solid #b45309;
+  box-shadow: var(--shadow-sm), 0 2px 8px rgba(245, 158, 11, 0.25);
+}
+.btn-warning:hover:not(:disabled) {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
   transform: translateY(-1px);
 }
 
