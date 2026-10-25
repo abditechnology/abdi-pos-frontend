@@ -89,35 +89,164 @@
       </div>
 
       <!-- User Profile Dropdown / Card -->
-      <div class="user-profile-btn">
-        <img
-          :src="authStore.user.avatar"
-          alt="Avatar Staf"
-          class="user-avatar"
-        />
-        <div class="user-meta">
-          <span class="user-name">{{ authStore.user.name }}</span>
-          <span class="user-role">{{ authStore.user.role }}</span>
-        </div>
+      <div class="user-profile-wrapper" ref="profileDropdownRef">
+        <button
+          type="button"
+          class="user-profile-btn"
+          aria-label="Menu Pengguna"
+          @click="isProfileOpen = !isProfileOpen"
+        >
+          <img
+            :src="authStore.user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces'"
+            alt="Avatar Staf"
+            class="user-avatar"
+          />
+          <div class="user-meta">
+            <span class="user-name">{{ authStore.user?.name }}</span>
+            <span class="user-role">{{ authStore.user?.role }}</span>
+          </div>
+          <AppIcon
+            name="chevron-down"
+            :size="14"
+            custom-class="profile-chevron"
+            :style="{ transform: isProfileOpen ? 'rotate(180deg)' : 'none' }"
+          />
+        </button>
+
+        <!-- User Dropdown Menu -->
+        <Transition name="dropdown-spring">
+          <div v-if="isProfileOpen" class="user-dropdown-menu">
+            <div class="dropdown-user-header">
+              <img :src="authStore.user?.avatar" alt="Avatar" class="dropdown-avatar" />
+              <div class="dropdown-user-info">
+                <strong>{{ authStore.user?.name }}</strong>
+                <span class="dropdown-email">{{ authStore.user?.email }}</span>
+                <span class="dropdown-badge">{{ authStore.user?.role }}</span>
+              </div>
+            </div>
+
+            <div class="dropdown-menu-list">
+              <router-link
+                to="/app/profile"
+                class="dropdown-menu-item"
+                @click="isProfileOpen = false"
+              >
+                <AppIcon name="user" :size="16" />
+                <span>Lihat Profil Saya</span>
+              </router-link>
+
+              <button
+                type="button"
+                class="dropdown-menu-item"
+                @click="openEditProfile"
+              >
+                <AppIcon name="settings" :size="16" />
+                <span>Ubah Data Profil</span>
+              </button>
+
+              <button
+                type="button"
+                class="dropdown-menu-item"
+                @click="openChangePassword"
+              >
+                <AppIcon name="lock" :size="16" />
+                <span>Ganti Kata Sandi</span>
+              </button>
+
+              <router-link
+                to="/platform/dashboard"
+                class="dropdown-menu-item"
+                @click="isProfileOpen = false"
+              >
+                <AppIcon name="shield" :size="16" />
+                <span>Konsol Superadmin</span>
+              </router-link>
+
+              <hr class="dropdown-divider" />
+
+              <button
+                type="button"
+                class="dropdown-menu-item item-logout"
+                @click="promptLogout"
+              >
+                <AppIcon name="log-out" :size="16" />
+                <span>Keluar / Logout</span>
+              </button>
+            </div>
+          </div>
+        </Transition>
       </div>
     </div>
+
+    <!-- Modals for Profile Management -->
+    <EditProfileModal
+      v-model="isEditModalOpen"
+      @success="isEditModalOpen = false"
+    />
+
+    <ChangePasswordModal
+      v-model="isPasswordModalOpen"
+      @success="isPasswordModalOpen = false"
+    />
+
+    <ConfirmModal
+      v-model="isLogoutModalOpen"
+      title="Keluar dari Akun?"
+      message="Apakah Anda yakin ingin keluar dari sesi aplikasi? Anda perlu login kembali untuk melanjutkan."
+      variant="warning"
+      confirm-text="Ya, Keluar"
+      cancel-text="Batal"
+      @confirm="confirmLogout"
+    />
   </header>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../../stores/authStore'
 import { useUiStore } from '../../stores/uiStore'
 import OutletSelector from './OutletSelector.vue'
 import AppIcon from '../icons/AppIcon.vue'
+import ConfirmModal from '../ui/ConfirmModal.vue'
+import EditProfileModal from '../../../modules/auth/components/EditProfileModal.vue'
+import ChangePasswordModal from '../../../modules/auth/components/ChangePasswordModal.vue'
 
 const authStore = useAuthStore()
 const uiStore = useUiStore()
 const route = useRoute()
+const router = useRouter()
 
 const isNotificationOpen = ref(false)
 const notificationRef = ref(null)
+
+const isProfileOpen = ref(false)
+const profileDropdownRef = ref(null)
+
+const isEditModalOpen = ref(false)
+const isPasswordModalOpen = ref(false)
+const isLogoutModalOpen = ref(false)
+
+const openEditProfile = () => {
+  isProfileOpen.value = false
+  isEditModalOpen.value = true
+}
+
+const openChangePassword = () => {
+  isProfileOpen.value = false
+  isPasswordModalOpen.value = true
+}
+
+const promptLogout = () => {
+  isProfileOpen.value = false
+  isLogoutModalOpen.value = true
+}
+
+const confirmLogout = () => {
+  authStore.logout()
+  isLogoutModalOpen.value = false
+  router.push('/login')
+}
 
 const unreadCount = computed(() => {
   return uiStore.notifications.filter(n => n.unread).length
@@ -144,10 +273,13 @@ const getNotifIcon = (type) => {
   return 'info'
 }
 
-// Close notification on click outside
+// Close notification and profile on click outside
 const handleClickOutside = (e) => {
   if (notificationRef.value && !notificationRef.value.contains(e.target)) {
     isNotificationOpen.value = false
+  }
+  if (profileDropdownRef.value && !profileDropdownRef.value.contains(e.target)) {
+    isProfileOpen.value = false
   }
 }
 
@@ -442,11 +574,15 @@ onUnmounted(() => {
 }
 
 /* User Profile Badge */
+.user-profile-wrapper {
+  position: relative;
+}
+
 .user-profile-btn {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 4px 8px 4px 4px;
+  padding: 4px 10px 4px 4px;
   border-radius: var(--radius-full);
   background-color: var(--slate-100);
   border: 1px solid var(--slate-200);
@@ -456,6 +592,11 @@ onUnmounted(() => {
 
 .user-profile-btn:hover {
   background-color: var(--slate-200);
+}
+
+.profile-chevron {
+  color: var(--text-muted);
+  transition: transform var(--duration-fast) ease;
 }
 
 .user-avatar {
@@ -470,7 +611,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   text-align: left;
-  padding-right: 6px;
+  padding-right: 4px;
 }
 
 .user-name {
@@ -485,9 +626,115 @@ onUnmounted(() => {
   color: var(--text-muted);
 }
 
+/* User Dropdown Menu */
+.user-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 260px;
+  background-color: #ffffff;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-app);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  z-index: 200;
+  overflow: hidden;
+}
+
+.dropdown-user-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+  border-bottom: 1px solid var(--border-app);
+}
+
+.dropdown-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  border: 2px solid var(--primary-500);
+}
+
+.dropdown-user-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dropdown-user-info strong {
+  font-size: 13.5px;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-email {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--primary-600);
+  margin-top: 2px;
+}
+
+.dropdown-menu-list {
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+}
+
+.dropdown-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  text-decoration: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.dropdown-menu-item:hover {
+  background-color: var(--slate-100);
+  color: var(--primary-600);
+}
+
+.dropdown-divider {
+  border: 0;
+  height: 1px;
+  background-color: var(--border-app);
+  margin: 4px 6px;
+}
+
+.item-logout {
+  color: var(--danger-500);
+}
+
+.item-logout:hover {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
 @media (max-width: 900px) {
   .mobile-menu-btn { display: flex; }
   .user-meta { display: none; }
+  .profile-chevron { display: none; }
   .pos-shortcut-key { display: none; }
   .breadcrumb-container { display: none; }
 }

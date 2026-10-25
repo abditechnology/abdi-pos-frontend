@@ -12,6 +12,28 @@
   </head>
   <body>
     <div id="app"></div>
+    <script>
+      window.addEventListener('error', function(event) {
+        var el = document.getElementById('debug-error-box');
+        if (!el) {
+          el = document.createElement('div');
+          el.id = 'debug-error-box';
+          el.style = 'position:fixed;top:0;left:0;right:0;padding:16px;background:#fee2e2;color:#991b1b;border-bottom:2px solid #ef4444;font-family:monospace;font-size:13px;z-index:999999;box-shadow:0 4px 12px rgba(0,0,0,0.15);white-space:pre-wrap;';
+          document.body.prepend(el);
+        }
+        el.textContent = '❌ JS Error: ' + (event.error?.stack || event.message || event);
+      });
+      window.addEventListener('unhandledrejection', function(event) {
+        var el = document.getElementById('debug-error-box');
+        if (!el) {
+          el = document.createElement('div');
+          el.id = 'debug-error-box';
+          el.style = 'position:fixed;top:0;left:0;right:0;padding:16px;background:#fee2e2;color:#991b1b;border-bottom:2px solid #ef4444;font-family:monospace;font-size:13px;z-index:999999;box-shadow:0 4px 12px rgba(0,0,0,0.15);white-space:pre-wrap;';
+          document.body.prepend(el);
+        }
+        el.textContent = '❌ Unhandled Promise: ' + (event.reason?.stack || event.reason?.message || event.reason || 'Unknown error');
+      });
+    </script>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

@@ -28,7 +28,7 @@ Aplikasi ini dibangun mengacu secara ketat pada spesifikasi:
 | **State Management** | Pinia 4+ | Store terpisah per domain (`auth`, `outlet`, `ui`) |
 | **Routing** | Vue Router | Nested routes, layout shells, route meta |
 | **Typography** | Plus Jakarta Sans | Modern geometric sans-serif |
-| **Icons** | Custom Crisp SVG Component (`AppIcon.vue`) | Zero-dependency, resolusi tajam, animatable |
+| **Icons** | Custom Crisp SVG Component (`AppIcon.vue`) | Zero-dependency, 35+ SVG icons (pos, cart, package, store, trash, shield, dll.) |
 | **Styling** | Vanilla CSS Tokens & Utility Architecture | Zero compile overhead, spring easing, glassmorphic |
 
 ### Prinsip Utama (Architectural Rules)
@@ -36,12 +36,21 @@ Aplikasi ini dibangun mengacu secara ketat pada spesifikasi:
    - UI murni dan atomik ditaruh di `src/shared/components/ui/`.
    - Logika halaman dan koordinasi data ditaruh di `src/modules/<nama_modul>/pages/`.
    - Jangan membuat *abstraksi berlebih* (Repository/Service class tiruan) jika hanya untuk operasi CRUD sederhana.
-2. **Authority Tenancy & Backend First**:
+2. **Deterministic Route Shells & Layout Chunking**:
+   - Layout utama (`AppLayout.vue` dan `PlatformLayout.vue`) beserta seluruh halaman konsol platform diimpor secara statis (*static import*) pada `src/router/index.js` untuk mengeliminasi potensi kegagalan *dynamic chunk loading* / network race condition pada browser.
+   - Parent route `/platform` tidak menggunakan redirect langsung di level parent (menghindari redirect loop / aborted navigation), melainkan didelegasikan ke child route `{ path: '', redirect: '/platform/dashboard' }`.
+   - Inisialisasi aplikasi pada `src/main.js` menunggu `router.isReady()` sebelum memanggil `app.mount('#app')`, dilengkapi penangkap error visual global (`app.config.errorHandler` & window error logger) sehingga aplikasi tidak pernah mengalami *silent blank screen*.
+   - Semua `<RouterView>` dengan `<Transition>` dipagari guard `v-if="Component"` dan dipasangi `:key="$route.fullPath"`.
+3. **Defensive Template Formatting**:
+   - Seluruh pemformatan angka/mata uang pada template Vue dilarang memanggil method langsung seperti `.toLocaleString()` tanpa nilai fallback. Gunakan helper `formatNumber(val)` berbasis `Intl.NumberFormat('id-ID')` yang aman dari nilai `null`/`undefined`.
+4. **Authority Tenancy & Backend First**:
    - Frontend tidak menentukan harga akhir, diskon, atau pajak secara otoritatif. Angka pada checkout disinkronkan dari respon kalkulasi backend.
    - `tenant_id` tidak dikirim sebagai bukti kepemilikan data; backend menurunkannya dari sesi otentikasi domain/token.
-3. **Multi-Outlet Awareness (PRD Section 7)**:
+5. **Multi-Outlet Awareness (PRD Section 7)**:
    - Modul operasional (POS, Shift, Inventaris, Transaksi) selalu terikat pada cabang aktif (`currentOutletId` di `outletStore`).
    - Mengganti cabang aktif melalui `OutletSelector` otomatis memicu penyegaran konteks data tanpa memuat ulang seluruh halaman.
+6. **Immediate Watcher Function Ordering (TDZ Safety)**:
+   - Pada blok `<script setup>`, penggunaan `watch(source, callback, { immediate: true })` menyebabkan callback dieksekusi secara sinkron saat inisialisasi komponen. Seluruh fungsi pembantu (seperti `resetForm()`) yang dipanggil di dalam watcher wajib dideklarasikan secara leksikal *sebelum* `watch` untuk mencegah `ReferenceError` akibat Temporal Dead Zone (TDZ).
 
 ---
 
@@ -51,7 +60,8 @@ Aplikasi ini dibangun mengacu secara ketat pada spesifikasi:
 abdi-pos-frontend/src/
 ├── app/
 │   ├── layouts/
-│   │   └── AppLayout.vue          # Layout induk (Sidebar kolapsibel, Header, Toast viewport)
+│   │   ├── AppLayout.vue          # Layout tenant toko (Sidebar kolapsibel, Header, Toast viewport)
+│   │   └── PlatformLayout.vue     # Layout eksklusif Superadmin (SaaS Owner Console)
 │   └── router/
 │       └── index.js               # Route configuration & lazy imports
 ├── shared/
@@ -89,6 +99,25 @@ abdi-pos-frontend/src/
     │   └── pages/PosCashierPage.vue
     ├── showcase/
     │   └── pages/ComponentShowcasePage.vue
+    ├── auth/                      # MODUL OTENTIKASI & PROFIL PENGGUNA
+    │   ├── components/
+    │   │   ├── EditProfileModal.vue   # Modal CRUD profil (Nama, Email, HP, Domisili, Avatar)
+    │   │   └── ChangePasswordModal.vue# Modal ganti sandi + Password Strength Meter
+    │   └── pages/
+    │       ├── LoginPage.vue          # Halaman masuk dengan 1-click Demo Account Switcher
+    │       └── ProfilePage.vue        # Halaman profil lengkap, shift kasir, RBAC, sesi aktif
+    ├── platform/                  # MODUL SUPERADMIN SAAS OWNER
+    │   ├── components/
+    │   │   ├── TenantModal.vue    # Modal pendaftaran & edit tenant baru
+    │   │   └── PlanModal.vue      # Modal pembuatan & edit paket langganan
+    │   ├── pages/
+    │   │   ├── PlatformDashboardPage.vue # Metrik MRR, total tenant, & kesehatan sistem
+    │   │   ├── PlatformTenantsPage.vue   # Manajemen tenant, impersonate, suspend
+    │   │   ├── PlatformPlansPage.vue     # CRUD paket langganan & breakdown subscriber
+    │   │   ├── PlatformDomainsPage.vue   # Monitoring verifikasi DNS & SSL
+    │   │   └── PlatformAuditLogsPage.vue # Rekam jejak audit keamanan platform
+    │   └── stores/
+    │       └── platformStore.js   # State & actions pengelolaan SaaS platform
     └── generic/
         └── pages/ModulePlaceholderPage.vue
 ```
@@ -137,7 +166,14 @@ Seluruh token visual dikelola di `src/shared/styles/design-system.css`.
 ## 🧠 State Management & Data Flow
 
 ### 1. `authStore` (`src/shared/stores/authStore.js`)
-Menyimpan sesi pengguna saat ini, info tenant aktif (nama bisnis, paket langganan, subdomain/custom domain), serta status shift kasir berjalan (`activeShift`).
+Menyimpan sesi pengguna saat ini, info tenant aktif (nama bisnis, paket langganan, subdomain/custom domain), status shift kasir berjalan (`activeShift`), serta data profil pengguna.
+- **Actions**:
+  - `login(email, password, remember)`: Otentikasi pengguna, mendukung pencocokan akun demo (Owner, Kasir, Superadmin) atau kredensial kustom.
+  - `logout()`: Mengakhiri sesi dan membersihkan kredensial.
+  - `updateProfile(data)`: Mengubah nama, kontak telepon/WA, alamat domisili, dan avatar foto pengguna.
+  - `changePassword(oldPass, newPass)`: Memperbarui kata sandi dengan validasi keamanan.
+  - `terminateSession(sessionId)`: Memutus koneksi dari perangkat lain yang terhubung.
+- **Demo Accounts**: Menyediakan 3 kredensial akun instan (*1-click selector*) untuk mempermudah evaluasi antar peran (Owner, Kasir, Superadmin).
 
 ### 2. `outletStore` (`src/shared/stores/outletStore.js`)
 Mengelola cabang yang diizinkan untuk pengguna:
@@ -160,6 +196,14 @@ toast.error('Printer kasir tidak merespon', 'Gagal')
 toast.warning('Stok terigu tersisa 3 kg', 'Perhatian')
 toast.info('Cabang berhasil dialihkan ke Tebet', 'Informasi')
 ```
+
+### 4. `platformStore` (`src/modules/platform/stores/platformStore.js`)
+Store khusus Superadmin (SaaS Owner) untuk memantau metrik ekosistem platform:
+- **Metrik Terhitung**: `totalTenants`, `activeTenants`, `trialTenants`, `totalMRR` (pendapatan berulang bulanan), `totalOutletsManaged`.
+- **Manajemen Tenant**: `createTenant(data)`, `updateTenantStatus(id, status, reason)`, `deleteTenant(id)`.
+- **Manajemen Paket SaaS**: `createPlan(data)`, `updatePlan(id, data)`, `deletePlan(id)` (dengan proteksi blokir jika paket sedang dipakai tenant aktif).
+- **Verifikasi Domain**: `verifyDomain(domainId)` (verifikasi DNS & penerbitan SSL wildcard/custom).
+- **Audit Logging**: Rekam jejak otomatis setiap aksi superadmin demi keamanan multi-tenant.
 
 ---
 

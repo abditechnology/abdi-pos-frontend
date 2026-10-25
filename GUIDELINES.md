@@ -15,7 +15,9 @@ Bahasa yang digunakan di sini santai, ringan, dan langsung ke intinya agar Anda 
 5. [Membaca & Memantau Data di Dashboard](#5-membaca--memantau-data-di-dashboard)
 6. [Mengenal Notifikasi & Dialog Konfirmasi](#6-mengenal-notifikasi--dialog-konfirmasi)
 7. [Tips Pintasan Keyboard (Biar Kerjanya Sat-Set!)](#7-tips-pintasan-keyboard-biar-kerjanya-sat-set)
-8. [Tanya Jawab Singkat (FAQ)](#8-tanya-jawab-singkat-faq)
+8. [Panduan Khusus Superadmin (Pemilik Aplikasi POS SaaS)](#8-panduan-khusus-superadmin-pemilik-aplikasi-pos-saas)
+9. [Panduan Masuk (Login) & Pengelolaan Profil Pengguna](#9-panduan-masuk-login--pengelolaan-profil-pengguna)
+10. [Tanya Jawab Singkat (FAQ)](#10-tanya-jawab-singkat-faq)
 
 ---
 
@@ -177,7 +179,103 @@ Kasir yang handal bekerja dengan cepat! Gunakan tombol keyboard berikut:
 
 ---
 
-## 8. Tanya Jawab Singkat (FAQ)
+## 8. Panduan Khusus Superadmin (Pemilik Aplikasi POS SaaS)
+
+Bagian ini ditujukan khusus untuk **Anda selaku Pemilik (Founder / Superadmin) platform Abdi POS SaaS**. Anda memiliki hak istimewa untuk mengendalikan seluruh bisnis klien yang berlangganan pada aplikasi Anda.
+
+### A. Cara Masuk ke Konsol Superadmin
+1. **Melalui Sidebar**: Di bagian paling bawah sidebar navigasi mode toko, klik tombol berikon perisai **"Konsol Superadmin (Owner)"**.
+2. **Melalui URL Langsung**: Anda dapat langsung membuka alamat URL: `http://localhost:5173/platform/dashboard`. Seluruh path berawalan `/platform/*` kini langsung dimuat dengan cepat dan stabil tanpa layar putih.
+3. **Kembali ke Mode Toko / Kasir**: Saat berada di dalam konsol Superadmin, Anda dapat kembali kapan saja ke mode toko biasa dengan mengklik tombol **"Buka Portal Tenant"** di kanan atas header, atau tombol **"Masuk ke Mode Tenant"** di sidebar.
+4. Tampilan konsol Superadmin didesain eksklusif dengan tema **Midnight Indigo & Deep Navy** untuk membedakannya secara visual dari mode operasional toko biasa.
+
+### B. Membaca Ringkasan & Pertumbuhan SaaS (Platform Dashboard)
+Di halaman **Ringkasan Platform (`/platform/dashboard`)**, Anda dapat memantau indikator bisnis SaaS Anda:
+- **Monthly Recurring Revenue (MRR)**: Total pendapatan berulang bulanan dari semua tenant yang aktif membayar.
+- **Total Tenant Terdaftar**: Berapa banyak brand/bisnis yang mendaftar di sistem Anda, berapa yang statusnya *Aktif*, dan berapa yang sedang dalam *Masa Trial*.
+- **Total Cabang / Outlet Beroperasi**: Jumlah cabang fisik yang menggunakan aplikasi Anda di seluruh Indonesia.
+- **Distribusi Tenant per Paket**: Grafik yang menunjukkan paket mana yang paling diminati oleh klien dan berapa omset yang dihasilkan dari masing-masing paket.
+
+### C. Menambah & Mendaftarkan Tenant Baru
+Saat ada klien bisnis baru yang ingin menggunakan aplikasi kasir Anda:
+1. Buka menu **"Kelola Tenant"** (`/platform/tenants`) lalu klik tombol biru **"+ Tambah Tenant Baru"**.
+2. Masukkan data identitas bisnis:
+   - **Nama Bisnis**: Misal *Kopi Kenangan Senja*.
+   - **Subdomain**: Cukup ketik kata kuncinya (misal *kopisenja*), sistem akan otomatis membuatkan URL `kopisenja.abdipos.com`.
+   - **Custom Domain (Opsional)**: Jika klien punya domain sendiri (misal *kopikenangansenja.com*).
+   - **Nama & Email Pemilik**: Kredensial login owner akan dikaitkan ke email ini.
+   - **Pilihan Paket SaaS**: Pilih Starter, Business Pro, atau Enterprise Franchise.
+   - **Masa Trial 14 Hari**: Centang opsi ini jika Anda ingin memberi masa percobaan gratis terlebih dahulu.
+3. Klik **"Daftarkan Tenant Sekarang"**. Tenant baru langsung terdaftar dan dapat langsung mulai berjualan!
+
+### D. Mengelola & Membekukan Akun Tenant (Suspend)
+Di halaman **"Kelola Tenant"**, Anda dapat mengambil tindakan administratif pada setiap baris data:
+- **Login sebagai Tenant (Impersonate)**: Klik tombol *Login* berwarna biru untuk masuk langsung ke tampilan toko milik tenant tersebut. Fitur ini sangat berguna saat klien meminta bantuan teknis (*customer support*) tanpa Anda perlu menanyakan password mereka!
+- **Ubah Data Tenant**: Klik ikon roda gigi (*Settings*) untuk mengubah kuota cabang atau paket klien.
+- **Bekukan Akun (Suspend)**: Jika klien belum membayar tagihan langganan setelah jatuh tempo, klik ikon segitiga kuning. Akun mereka akan dibekukan sementara hingga pembayaran selesai.
+- **Aktifkan Kembali**: Begitu klien melunasi tagihan, klik ikon centang hijau untuk membuka kembali blokir akun dalam 1 detik.
+
+### E. Membuat, Mengedit, dan Menghapus Paket Langganan
+Buka menu **"Paket Langganan"** (`/platform/plans`) untuk mengatur katalog paket harga SaaS Anda:
+1. **Membuat Paket Baru**:
+   - Klik tombol **"+ Buat Paket Baru"**.
+   - Masukkan nama paket (misal: *Paket Resto Franchise*), label badge (*"Eksklusif"*), harga bulanan (misal Rp 499.000/bln), dan diskon harga tahunan.
+   - Tentukan kuota batasan: Maksimal Cabang, Maksimal Akun Kasir, dan Maksimal Menu Makanan.
+   - Ketikkan daftar fitur (1 baris per fitur) yang akan tampil sebagai centang hijau.
+   - Klik **"Terbitkan Paket Baru"**.
+2. **Mengubah Konfigurasi Paket**:
+   - Klik tombol **"Ubah Konfigurasi"** pada kartu paket yang ingin diperbarui (misal ingin menaikkan limit kuota atau menyesuaikan harga promo).
+3. **Menghapus Paket**:
+   - Klik ikon tong sampah pada paket yang ingin dihapus.
+   - *Sistem Keamanan Pintar*: Jika paket tersebut masih digunakan oleh tenant aktif, sistem akan otomatis menolak penghapusan demi melindungi integritas data pelanggan Anda.
+
+### F. Memeriksa Tenant Mana Saja yang Membeli Setiap Paket
+Di bagian bawah halaman paket langganan, terdapat tabel **"Daftar Tenant Berdasarkan Paket yang Dibeli"**. Klik tab nama paket (Starter / Pro / Enterprise) untuk melihat daftar nama toko, nama pemilik, kontak email, dan tanggal jatuh tempo mereka secara transparan.
+
+### G. Memantau Status DNS & Domain Klien
+Buka menu **"Domain & DNS SaaS"** (`/platform/domains`) untuk memastikan seluruh alamat website dan subdomain tenant terhubung dengan aman. Jika klien baru saja mengarahkan DNS domain kustom mereka, klik tombol **"Verifikasi Sekarang"** untuk mengaktifkan sertifikat keamanan SSL (HTTPS) secara instan.
+
+### H. Memeriksa Rekam Jejak (Audit Logs)
+Buka menu **"Audit Logs Aktivitas"** (`/platform/audit-logs`) untuk memantau rekam jejak setiap aksi krusial yang pernah dilakukan di sistem (siapa yang mendaftarkan tenant, kapan paket diubah, alamat IP, dan waktu eksekusi).
+
+---
+
+## 9. Panduan Masuk (Login) & Pengelolaan Profil Pengguna
+
+### A. Masuk ke Aplikasi (Login)
+Buka URL **`http://localhost:5173/login`**.
+- **Fitur Akun Demo Instan (1-Click Switcher)**: Di bagian atas formulir, klik tombol pill profil yang Anda inginkan:
+  1. **Owner & Admin** (*Ahmad Najib*): Langsung mengarahkan ke dashboard utama bisnis.
+  2. **Kasir Operasional** (*Siti Rahmawati*): Langsung mengarahkan ke antarmuka kasir cepat (POS).
+  3. **Superadmin SaaS** (*Founder Abdi POS*): Langsung mengarahkan ke Konsol Superadmin (`/platform/dashboard`).
+- Anda juga dapat mengetikkan email dan sandi pribadi secara manual, mencentang opsi **"Ingat saya"**, atau menggunakan tombol **"Lupa Kata Sandi?"**.
+
+### B. Mengakses Halaman Profil Pengguna
+Anda dapat membuka halaman profil melalui dua cara mudah:
+1. **Dari Header Atas**: Klik kotak profil Anda di pojok kanan atas, lalu pilih **"Lihat Profil Saya"**.
+2. **Dari Sidebar Kiri**: Di kelompok menu *PENGATURAN*, klik menu **"Profil Pengguna"** (`/app/profile`).
+
+### C. Mengubah Data Profil (Nama, Kontak, & Foto Avatar)
+1. Di halaman profil atau melalui dropdown header, klik tombol biru **"Ubah Profil"**.
+2. Jendela pop-up modal akan muncul:
+   - **Ganti Foto Avatar**: Klik salah satu foto preset yang tersedia atau ketikkan URL foto kustom Anda.
+   - **Nama Lengkap & Kontak**: Sesuaikan nama, email, nomor WhatsApp, serta alamat tempat tinggal Anda.
+   - Klik **"Simpan Perubahan"**. Notifikasi hijau akan muncul dan profil langsung terbarui seketika!
+
+### D. Mengubah Kata Sandi Akun
+1. Klik tombol **"Ganti Password"**.
+2. Masukkan kata sandi lama Anda.
+3. Masukkan kata sandi baru. Sistem dilengkapi dengan **Meter Pengukur Keamanan Sandi (Strength Meter)**:
+   - Baris warna akan bergerak dari merah (lemah), kuning (sedang), hingga hijau (sangat kuat).
+   - Pastikan memenuhi 3 kriteria keamanan: minimal 8 karakter, kombinasi huruf besar/kecil, dan angka/simbol.
+4. Ketik ulang sandi baru pada kolom konfirmasi lalu klik **"Perbarui Kata Sandi"**.
+
+### E. Keluar Akun (Logout)
+Klik tombol merah **"Keluar Akun"** di pojok kanan atas profil atau dari dropdown menu header. Sistem akan menampilkan jendela konfirmasi peringatan sebelum mengakhiri sesi dan mengarahkan Anda kembali ke halaman Login.
+
+---
+
+## 10. Tanya Jawab Singkat (FAQ)
 
 **T: Apakah kasir bisa salah melihat data cabang lain?**  
 *J: Tidak. Sistem Abdi POS secara ketat membatasi hak akses kasir hanya pada cabang tempat ia ditugaskan oleh pemilik toko.*

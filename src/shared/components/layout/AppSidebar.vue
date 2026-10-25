@@ -78,8 +78,13 @@
       </template>
     </nav>
 
-    <!-- Sidebar Footer / Subscription Status -->
+    <!-- Sidebar Footer / Subscription Status & Superadmin Switcher -->
     <div v-if="!uiStore.isSidebarCollapsed" class="sidebar-footer">
+      <router-link to="/platform/dashboard" class="superadmin-switch-btn">
+        <AppIcon name="shield" :size="16" />
+        <span>Konsol Superadmin (Owner)</span>
+      </router-link>
+
       <div class="subscription-card">
         <div class="sub-icon">
           <AppIcon name="sparkles" :size="16" />
@@ -153,6 +158,7 @@ const menuGroups = [
   {
     title: 'PENGATURAN',
     items: [
+      { label: 'Profil Pengguna', path: '/app/profile', icon: 'user' },
       { label: 'Pengaturan Bisnis', path: '/app/settings', icon: 'settings' },
       { label: 'Domain & Subdomain', path: '/app/domains', icon: 'globe' },
       { label: 'Paket Langganan', path: '/app/subscription', icon: 'credit-card' }
@@ -371,6 +377,31 @@ const menuGroups = [
   padding: 14px 16px;
   border-top: 1px solid var(--navy-800);
   background: rgba(11, 21, 40, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.superadmin-switch-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(59, 130, 246, 0.25) 100%);
+  border: 1px solid rgba(129, 140, 248, 0.4);
+  color: #c7d2fe;
+  font-size: 12px;
+  font-weight: 700;
+  transition: all var(--duration-fast) ease;
+}
+
+.superadmin-switch-btn:hover {
+  background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+  transform: translateY(-1px);
 }
 
 .subscription-card {

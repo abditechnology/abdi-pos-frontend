@@ -1,9 +1,27 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AppLayout from '../app/layouts/AppLayout.vue'
+import PlatformLayout from '../app/layouts/PlatformLayout.vue'
+
+// Platform module pages statically loaded for instant rock-solid rendering
+import PlatformDashboardPage from '../modules/platform/pages/PlatformDashboardPage.vue'
+import PlatformTenantsPage from '../modules/platform/pages/PlatformTenantsPage.vue'
+import PlatformPlansPage from '../modules/platform/pages/PlatformPlansPage.vue'
+import PlatformDomainsPage from '../modules/platform/pages/PlatformDomainsPage.vue'
+import PlatformAuditLogsPage from '../modules/platform/pages/PlatformAuditLogsPage.vue'
+
+// Auth module pages
+import LoginPage from '../modules/auth/pages/LoginPage.vue'
+import ProfilePage from '../modules/auth/pages/ProfilePage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginPage,
+      meta: { title: 'Masuk Akun — Abdi POS' }
+    },
     {
       path: '/',
       redirect: '/app/dashboard'
@@ -12,6 +30,12 @@ const router = createRouter({
       path: '/app',
       component: AppLayout,
       children: [
+        {
+          path: 'profile',
+          name: 'profile',
+          component: ProfilePage,
+          meta: { title: 'Profil Saya' }
+        },
         {
           path: 'dashboard',
           name: 'dashboard',
@@ -194,6 +218,47 @@ const router = createRouter({
           name: 'pos',
           component: () => import('../modules/pos/pages/PosCashierPage.vue'),
           meta: { title: 'Point of Sale (Kasir)' }
+        }
+      ]
+    },
+    // Superadmin SaaS Owner Console
+    {
+      path: '/platform',
+      component: PlatformLayout,
+      children: [
+        {
+          path: '',
+          redirect: '/platform/dashboard'
+        },
+        {
+          path: 'dashboard',
+          name: 'platform-dashboard',
+          component: PlatformDashboardPage,
+          meta: { title: 'Ringkasan Platform SaaS' }
+        },
+        {
+          path: 'tenants',
+          name: 'platform-tenants',
+          component: PlatformTenantsPage,
+          meta: { title: 'Kelola Tenant SaaS' }
+        },
+        {
+          path: 'plans',
+          name: 'platform-plans',
+          component: PlatformPlansPage,
+          meta: { title: 'Paket Langganan SaaS' }
+        },
+        {
+          path: 'domains',
+          name: 'platform-domains',
+          component: PlatformDomainsPage,
+          meta: { title: 'Pemetaan Domain SaaS' }
+        },
+        {
+          path: 'audit-logs',
+          name: 'platform-audit-logs',
+          component: PlatformAuditLogsPage,
+          meta: { title: 'Audit Trail Superadmin' }
         }
       ]
     },
