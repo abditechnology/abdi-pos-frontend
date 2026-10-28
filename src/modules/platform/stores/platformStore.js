@@ -9,68 +9,101 @@ export const usePlatformStore = defineStore('platform', () => {
   const plans = ref([
     {
       id: 1,
-      code: 'starter',
-      name: 'Starter UMKM',
-      badge: 'UMKM & Pemula',
-      priceMonthly: 99000,
-      priceYearly: 990000,
+      code: 'free_trial',
+      name: 'Free Plan (Trial 30 Hari)',
+      badge: 'Uji Coba Penuh',
+      priceMonthly: 0,
+      priceYearly: 0,
       maxOutlets: 1,
-      maxStaff: 3,
-      maxProducts: 200,
+      maxStaff: 1,
+      maxProducts: 20,
       features: [
         '1 Cabang / Outlet',
-        'Maksimal 3 Akun Kasir',
-        'Katalog 200 Produk',
-        'Laporan Penjualan Standar',
+        '1 Akun Staf / Kasir',
+        'Katalog Maksimal 20 Menu',
+        'Transaksi Tanpa Batas (30 Hari)',
+        'Buka-Tutup Shift Kasir',
+        'Laporan Penjualan Dasar',
         'Subdomain (.abdipos.com)'
       ],
       isPopular: false,
       isActive: true,
-      subscriberCount: 14
+      subscriberCount: 8
     },
     {
       id: 2,
+      code: 'ekonomis',
+      name: 'Ekonomis UMKM',
+      badge: 'Paling Terjangkau',
+      priceMonthly: 49000,
+      priceYearly: 490000,
+      maxOutlets: 2,
+      maxStaff: 3,
+      maxProducts: 50,
+      features: [
+        'Hingga 2 Cabang / Outlet',
+        '3 Akun Staf (1 Owner, 2 Kasir)',
+        'Katalog Maksimal 50 Menu',
+        'Transaksi Tanpa Batas (Unlimited)',
+        'Program Member & Poin Loyalitas',
+        'Diskon, Voucher & Bundling Promo',
+        'Buka-Tutup Shift & Rekonsiliasi Kas',
+        'Manajemen Stok Inventaris',
+        'Ekspor Laporan ke Excel (CSV)'
+      ],
+      isPopular: false,
+      isActive: true,
+      subscriberCount: 28
+    },
+    {
+      id: 3,
       code: 'pro',
       name: 'Business Pro',
-      badge: 'Paling Populer',
-      priceMonthly: 249000,
-      priceYearly: 2490000,
-      maxOutlets: 3,
+      badge: 'Best Seller',
+      priceMonthly: 129000,
+      priceYearly: 1290000,
+      maxOutlets: 5,
       maxStaff: 10,
-      maxProducts: 2000,
+      maxProducts: 100,
       features: [
-        'Hingga 3 Cabang / Outlet',
-        'Maksimal 10 Akun Staf/Kasir',
-        'Manajemen Inventaris Multi-Cabang',
-        'Diskon, Promo Bundling & Tebus Murah',
-        'Dukungan Custom Domain (.id / .com)',
+        'Hingga 5 Cabang / Outlet',
+        '10 Akun Staf & Supervisor',
+        'Katalog Maksimal 100 Menu',
+        'Semua Fitur Paket Ekonomis',
+        'Kitchen Display System (KDS Kanban)',
+        'Meja & Standee QR Self-Order',
+        'Resep Bahan Baku & HPP Otomatis',
+        'Hak Akses Staf Bertingkat (RBAC)',
         'Laporan Laba/Rugi & Analitik Lengkap'
       ],
       isPopular: true,
       isActive: true,
-      subscriberCount: 22
+      subscriberCount: 42
     },
     {
-      id: 3,
+      id: 4,
       code: 'enterprise',
-      name: 'Enterprise Franchise',
-      badge: 'Skala Besar',
-      priceMonthly: 699000,
-      priceYearly: 6990000,
-      maxOutlets: 15,
+      name: 'Enterprise',
+      badge: 'Multi-Cabang & Waralaba',
+      priceMonthly: 299000,
+      priceYearly: 2990000,
+      maxOutlets: 10,
       maxStaff: 50,
-      maxProducts: 10000,
+      maxProducts: 250,
       features: [
-        'Hingga 15 Cabang / Outlet',
-        'Akses Staf & Kasir Tanpa Batas',
-        'Sistem Self-Order QR Meja',
-        'Akses API / Webhook Integrasi Akuntansi',
-        'Prioritas Server & SLA Support 24/7',
-        'Dedicated Domain & White-label Receipt'
+        'Hingga 10 Cabang / Outlet',
+        '50 Akun Staf & Supervisor',
+        'Katalog Maksimal 250 Menu',
+        'Semua Fitur Business Pro',
+        'Multi-Outlet Centralized Dashboard',
+        'Mutasi & Transfer Stok Antar-Cabang',
+        'Dukungan Custom Domain (.com / .id)',
+        'Sertifikat SSL HTTPS Otomatis',
+        'Laporan Finansial Konsolidasi'
       ],
       isPopular: false,
       isActive: true,
-      subscriberCount: 6
+      subscriberCount: 12
     }
   ])
 
@@ -443,6 +476,61 @@ export const usePlatformStore = defineStore('platform', () => {
     return false
   }
 
+  // 5. Data Profil & Pengaturan Superadmin Root
+  const superadmin = ref({
+    name: 'Abdulloh Najib',
+    email: 'admin@abdipos.com',
+    role: 'Superadmin SaaS Owner',
+    title: 'Platform Architect & CEO',
+    phone: '0812-3456-7890',
+    location: 'Tulungagung, Jawa Timur, ID',
+    address: 'Jl. Pahlawan No. 88, Kedungwaru, Tulungagung',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&h=160&fit=crop&crop=faces',
+    joinDate: '10 Januari 2026',
+    lastLogin: 'Hari ini, 08:15 WIB',
+    twoFactorEnabled: true,
+    maintenanceMode: false,
+    sessionTimeout: '24 Jam',
+    emailNotifications: {
+      newTenant: true,
+      subscriptionPaid: true,
+      serverAlerts: true
+    },
+    activeSessions: [
+      { id: 1, device: 'MacBook Pro 16" (macOS Sequoia)', location: 'Tulungagung, ID', ip: '180.244.12.89', current: true, time: 'Aktif Sekarang' },
+      { id: 2, device: 'iPhone 15 Pro (Safari Mobile)', location: 'Surabaya, ID', ip: '114.125.45.22', current: false, time: 'Kemarin, 20:15' }
+    ]
+  })
+
+  const updateSuperadminProfile = (data) => {
+    Object.assign(superadmin.value, data)
+    auditLogs.value.unshift({
+      id: Date.now(),
+      action: 'ADMIN_PROFILE_UPDATED',
+      actor: 'Superadmin (Anda)',
+      target: superadmin.value.name,
+      description: 'Memperbarui informasi profil dan kontak akun Superadmin.',
+      time: 'Baru saja',
+      ipAddress: '127.0.0.1'
+    })
+    toast.success('Profil Superadmin berhasil diperbarui!')
+    return true
+  }
+
+  const updateSuperadminPassword = (oldPassword, newPassword) => {
+    auditLogs.value.unshift({
+      id: Date.now(),
+      action: 'ADMIN_PASSWORD_CHANGED',
+      actor: 'Superadmin (Anda)',
+      target: 'Root Security',
+      description: 'Kata sandi akun Superadmin berhasil diubah.',
+      time: 'Baru saja',
+      ipAddress: '127.0.0.1'
+    })
+    toast.success('Kata sandi Superadmin berhasil diubah!')
+    return true
+  }
+
   const getPlanById = (id) => {
     return plans.value.find(p => p.id === id) || { name: 'Unknown Plan', priceMonthly: 0 }
   }
@@ -452,6 +540,7 @@ export const usePlatformStore = defineStore('platform', () => {
     tenants,
     domains,
     auditLogs,
+    superadmin,
     totalTenants,
     activeTenants,
     trialTenants,
@@ -465,6 +554,8 @@ export const usePlatformStore = defineStore('platform', () => {
     updatePlan,
     deletePlan,
     verifyDomain,
+    updateSuperadminProfile,
+    updateSuperadminPassword,
     getPlanById
   }
 })

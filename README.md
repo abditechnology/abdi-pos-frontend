@@ -83,6 +83,7 @@ abdi-pos-frontend/src/
 │   ├── stores/
 │   │   ├── authStore.js               # State pengguna, info tenant, demo accounts, & sesi aktif
 │   │   ├── outletStore.js             # State cabang, switch outlet, & CRUD outlet
+│   │   ├── pluginStore.js             # State marketplace 7 plugin modular & add-on berlangganan
 │   │   └── uiStore.js                 # State sidebar terbuka/tertutup & daftar notifikasi
 │   └── styles/design-system.css       # Variabel tema, palet biru, & animasi keyframe
 └── modules/
@@ -143,24 +144,29 @@ abdi-pos-frontend/src/
     │   │   ├── OutletsPage.vue        # Grid cabang, ganti cabang aktif, indikator pusat utama
     │   │   └── StaffPage.vue          # Tabel staf, penugasan cabang, role badge, last login
     │   └── stores/staffStore.js       # State pengguna & staf tenant
-    ├── settings/                      # 12. PENGATURAN BISNIS, DOMAIN & LANGGANAN
+    ├── settings/                      # 12. PENGATURAN BISNIS, DOMAIN, PLUGIN & LANGGANAN
     │   ├── components/
     │   │   ├── ConnectDomainModal.vue # Form custom domain & panduan CNAME DNS
-    │   │   └── UpgradePlanModal.vue   # Perbandingan paket (Starter, Pro, Enterprise) & checkout
+    │   │   ├── UpgradePlanModal.vue   # Perbandingan 4 paket (Free, Ekonomis, Pro, Enterprise)
+    │   │   └── PluginDemoModal.vue    # Simulator interaktif 7 plugin modular (Selfie GPS, Komisi, WA, dll.)
     │   ├── pages/
     │   │   ├── BusinessSettingsPage.vue # Profil brand, tarif PPN 11%, format struk, pesan footer
     │   │   ├── TenantDomainsPage.vue  # Status subdomain .abdipos.com, custom domain, panduan DNS
-    │   │   └── SubscriptionPage.vue   # Paket Pro Plan aktif, kuota pemakaian, faktur tagihan bulanan
+    │   │   ├── PluginMarketplacePage.vue # Marketplace 7 plugin modular add-on lintas industri
+    │   │   └── SubscriptionPage.vue   # Paket aktif, ringkasan plugin add-on, kuota & riwayat tagihan
     ├── platform/                      # 13. KONSOL SUPERADMIN (SAAS OWNER)
     │   ├── components/
     │   │   ├── TenantModal.vue        # Modal pendaftaran & edit tenant baru
-    │   │   └── PlanModal.vue          # Modal paket langganan SaaS
+    │   │   ├── PlanModal.vue          # Modal paket langganan SaaS
+    │   │   └── PluginModal.vue        # Modal pembuatan & edit konfigurasi plugin add-on
     │   ├── pages/
     │   │   ├── PlatformDashboardPage.vue # Metrik MRR, total tenant, & kesehatan sistem
     │   │   ├── PlatformTenantsPage.vue   # Manajemen tenant, impersonate, suspend
     │   │   ├── PlatformPlansPage.vue     # CRUD paket langganan & breakdown subscriber
+    │   │   ├── PlatformPluginsPage.vue   # CRUD katalog plugin add-on & breakdown tenant
     │   │   ├── PlatformDomainsPage.vue   # Monitoring verifikasi DNS & SSL
-    │   │   └── PlatformAuditLogsPage.vue # Rekam jejak audit keamanan platform
+    │   │   ├── PlatformAuditLogsPage.vue # Rekam jejak audit keamanan platform
+    │   │   └── PlatformProfilePage.vue   # Profil, keamanan root 2FA, & preferensi platform
     │   └── stores/platformStore.js    # State & actions pengelolaan SaaS platform
     └── showcase/
         └── pages/ComponentShowcasePage.vue # Demonstrasi interaktif seluruh komponen UI
@@ -235,6 +241,36 @@ Untuk menjaga konsistensi visual di seluruh halaman tanpa berdesakan (*cramped l
 9. **`staffStore`**: Akun staf operasional, peran RBAC, dan penugasan cabang.
 10. **`platformStore`**: Khusus Superadmin SaaS untuk mengelola tenant, paket langganan, mapping domain, dan audit log.
 11. **`modeTransitionStore`**: Mengelola state transisi perpindahan konteks antara dashboard tenant biasa (`/app/*`) dan konsol superadmin (`/platform/*`), mengontrol progress bar 0-100%, pesan status dinamis, dan animasi orbital emblem.
+12. **`pluginStore`**: Mengelola katalog 7 plugin modular (Add-on Marketplace), status pemasangan (`isInstalled`), estimasi tagihan add-on bulanan, dan simulasi demo interaktif.
+
+---
+
+## 💎 Paket Langganan SaaS & Ekosistem Plugin Modular
+
+Abdi POS mengimplementasikan arsitektur harga **Core-to-Value + Modular Add-on Marketplace**. Skema ini menjaga harga dasar langganan tetap terjangkau bagi pelaku UMKM di daerah (seperti Tulungagung), sekaligus memberi fleksibilitas ekspansi bagi bisnis jasa, salon, spa, laundry, ekspedisi, maupun ritel:
+
+### 1. Empat Tingkatan Paket Utama (Core Plans):
+| Nama Paket | Biaya / Bulan | Kapasitas Cabang & Staf | Fitur Unggulan |
+|---|---|---|---|
+| **Free Plan** | Rp 0 (Trial 30 Hari) | 1 Cabang, 1 Kasir, Maks. 20 Menu | Uji coba operasional penuh tanpa komitmen, buka-tutup shift, laporan harian |
+| **Ekonomis UMKM** | Rp 49.000 / bln | 2 Cabang, 3 Staf, Maks. 50 Menu | Transaksi unlimited, stok mutasi, **Program Member & Poin**, **Diskon & Bundling Promo** |
+| **Business Pro** *(Best Seller)* | Rp 129.000 / bln | Hingga 5 Cabang, 10 Staf, Maks. 100 Menu | Kitchen Display System (KDS Live), Standee Meja QR Self-Order, Resep & HPP Otomatis |
+| **Enterprise** | Rp 299.000 / bln | Hingga 10 Cabang, 50 Staf, Maks. 250 Menu | Custom Domain (.com/.id), Centralized Dashboard Multi-Cabang, Konsolidasi Finansial |
+
+*Catatan: Dukungan bantuan dan batasan cetak struk/WA tidak dicantumkan sebagai pembeda paket. Program loyalitas poin dan bundling promosi diaktifkan langsung mulai dari paket Ekonomis UMKM.*
+
+### 2. Tujuh Plugin Modular Tambahan (Add-on Marketplace):
+| Nama Plugin | Biaya / Bulan | Sektor Sasaran | Kemampuan Utama |
+|---|---|---|---|
+| **Absensi Selfie & Geofencing GPS** | Rp 20.000 | Semua Sektor (F&B, Salon, Ritel) | Foto kamera selfie wajib saat jam masuk/pulang + validasi radius GPS 50m |
+| **Kalkulator Komisi Staf & Terapis** | Rp 25.000 | Salon, Barbershop, Spa, Bengkel | Otomasi bagi hasil per jasa/treatment, pilih staf di kasir POS, slip komisi |
+| **WhatsApp Bot & Notifikasi Status** | Rp 29.000 | Laundry, Servis, Ekspedisi, F&B | Kirim pesan otomatis saat cucian beres, servis tuntas, atau pesanan siap |
+| **WhatsApp Broadcast & Pengingat Ultah** | Rp 25.000 | F&B, Butik Fashion, Klinik | Ucapan ultah otomatis berhadiah voucher promo, 1-click broadcast hemat |
+| **Reservasi & Booking Mandiri Online** | Rp 35.000 | Salon, Barbershop, Spa, Cuci Mobil | Link pemesanan jadwal mandiri untuk pelanggan dari rumah + opsi DP QRIS |
+| **Kas Bon & Piutang Pelanggan** | Rp 15.000 | Toko Kelontong, Warkop, Bengkel | Tombol "Kas Bon" di kasir, limit plafon kredit, riwayat cicilan & pengingat WA |
+| **Catat Biaya Operasional & Laba Bersih** | Rp 29.000 | Semua Sektor Bisnis | Catat arus kas keluar non-HPP (listrik, sewa, gaji) untuk kalkulasi riil Net Profit |
+
+Setiap plugin dilengkapi simulator interaktif (`PluginDemoModal.vue`) untuk pratinjau langsung sebelum berlangganan.
 
 ---
 

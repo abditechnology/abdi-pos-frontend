@@ -42,7 +42,7 @@ export const useAuthStore = defineStore('auth', () => {
     slug: 'martabak-nusantara',
     subdomain: 'martabaknusantara.abdipos.com',
     customDomain: 'martabaknusantara.id',
-    plan: 'Pro SaaS Plan',
+    plan: 'Business Pro',
     status: 'active',
     currency: 'IDR',
     currencySymbol: 'Rp'

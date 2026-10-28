@@ -9,10 +9,14 @@
         </p>
       </div>
 
-      <div class="header-actions">
+      <div class="header-actions flex gap-2">
+        <router-link to="/app/plugins" class="header-link-btn">
+          <AppIcon name="sparkles" :size="16" />
+          <span>Marketplace Plugin</span>
+        </router-link>
         <BaseButton variant="primary" size="md" @click="showUpgradeModal = true">
           <AppIcon name="credit-card" :size="16" />
-          Upgrade / Kelola Paket
+          Pilihan Paket
         </BaseButton>
       </div>
     </div>
@@ -21,12 +25,18 @@
     <div class="active-plan-card bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-800 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden">
       <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <span class="inline-block bg-blue-500/30 text-white font-bold text-xs uppercase px-3 py-1 rounded-full mb-2">
-            Paket Bisnis Aktif
-          </span>
-          <h2 class="text-3xl font-extrabold">Pro Plan</h2>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="inline-block bg-blue-500/30 text-white font-bold text-xs uppercase px-3 py-1 rounded-full">
+              Paket Bisnis Aktif
+            </span>
+            <span class="inline-block bg-amber-400 text-slate-900 font-extrabold text-xs px-2.5 py-0.5 rounded-full shadow-sm">
+              Best Seller
+            </span>
+          </div>
+          <h2 class="text-3xl font-extrabold">Business Pro</h2>
           <p class="text-blue-100 text-sm mt-1">
-            Biaya Langganan: <strong class="text-white font-mono">Rp 299.000 / bulan</strong> • Periode penagihan berikutnya: <strong class="text-white">25 November 2026</strong>
+            Biaya Paket Utama: <strong class="text-white font-mono">Rp 129.000 / bulan</strong> •
+            Periode aktif hingga: <strong class="text-white">25 November 2026</strong>
           </p>
         </div>
 
@@ -43,38 +53,38 @@
       <BaseCard>
         <span class="text-xs font-semibold text-slate-500 block">Cabang Outlet Aktif</span>
         <div class="flex justify-between items-baseline mt-2">
-          <span class="text-2xl font-bold font-mono text-slate-900">3 / 5</span>
-          <span class="text-xs font-semibold text-blue-600">60% terpakai</span>
+          <span class="text-2xl font-bold font-mono text-slate-900">2 / 5</span>
+          <span class="text-xs font-semibold text-blue-600">40% terpakai</span>
         </div>
         <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden">
-          <div class="bg-blue-600 h-1.5 rounded-full" style="width: 60%"></div>
+          <div class="bg-blue-600 h-1.5 rounded-full" style="width: 40%"></div>
         </div>
       </BaseCard>
 
       <BaseCard>
         <span class="text-xs font-semibold text-slate-500 block">Akun Staf & Kasir</span>
         <div class="flex justify-between items-baseline mt-2">
-          <span class="text-2xl font-bold font-mono text-slate-900">5 / 15</span>
-          <span class="text-xs font-semibold text-emerald-600">33% terpakai</span>
+          <span class="text-2xl font-bold font-mono text-slate-900">5 / 10</span>
+          <span class="text-xs font-semibold text-emerald-600">50% terpakai</span>
         </div>
         <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden">
-          <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 33%"></div>
+          <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 50%"></div>
         </div>
       </BaseCard>
 
       <BaseCard>
-        <span class="text-xs font-semibold text-slate-500 block">Katalog Menu & Produk</span>
+        <span class="text-xs font-semibold text-slate-500 block">Katalog Menu & Jasa</span>
         <div class="flex justify-between items-baseline mt-2">
-          <span class="text-2xl font-bold font-mono text-slate-900">42 Item</span>
-          <span class="text-xs font-semibold text-purple-600">Unlimited</span>
+          <span class="text-2xl font-bold font-mono text-slate-900">42 / 100</span>
+          <span class="text-xs font-semibold text-purple-600">42% terpakai</span>
         </div>
         <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden">
-          <div class="bg-purple-500 h-1.5 rounded-full" style="width: 100%"></div>
+          <div class="bg-purple-500 h-1.5 rounded-full" style="width: 42%"></div>
         </div>
       </BaseCard>
 
       <BaseCard>
-        <span class="text-xs font-semibold text-slate-500 block">Transaksi Bulan Ini</span>
+        <span class="text-xs font-semibold text-slate-500 block">Transaksi Kasir POS</span>
         <div class="flex justify-between items-baseline mt-2">
           <span class="text-2xl font-bold font-mono text-slate-900">836 Struk</span>
           <span class="text-xs font-semibold text-indigo-600">Unlimited</span>
@@ -84,6 +94,76 @@
         </div>
       </BaseCard>
     </div>
+
+    <!-- Active Modular Plugins & Extensions (Add-on) -->
+    <BaseCard>
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 pb-3 border-b border-slate-100">
+        <div>
+          <div class="flex items-center gap-2">
+            <AppIcon name="sparkles" :size="18" class="text-purple-600" />
+            <h3 class="font-bold text-slate-900 text-base">Plugin & Ekstensi Aktif (Add-on Modular)</h3>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Fungsionalitas modular untuk melengkapi kebutuhan spesifik sektor bisnis Anda tanpa harus bayar fitur yang tidak dipakai.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3 shrink-0">
+          <div class="text-right">
+            <span class="text-xs text-slate-500 block">Subtotal Add-on:</span>
+            <span class="text-sm font-bold font-mono text-purple-700">{{ formatRp(pluginStore.totalActiveMonthlyFee) }}/bln</span>
+          </div>
+          <router-link to="/app/plugins" class="header-link-btn">
+            <AppIcon name="plus" :size="14" />
+            <span>Tambah Ekstensi</span>
+          </router-link>
+        </div>
+      </div>
+
+      <div v-if="pluginStore.activePlugins.length > 0" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div
+          v-for="p in pluginStore.activePlugins"
+          :key="p.id"
+          class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col justify-between hover:border-purple-300 transition-colors"
+        >
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="text-xs font-semibold px-2 py-0.5 rounded-md" :class="p.badgeClass">
+                {{ p.categoryLabel }}
+              </span>
+              <span class="text-xs font-bold font-mono text-slate-800">
+                {{ formatRp(p.priceMonthly) }}<span class="font-normal text-slate-500">/bln</span>
+              </span>
+            </div>
+
+            <h4 class="font-bold text-slate-900 text-sm mb-1">{{ p.name }}</h4>
+            <p class="text-xs text-slate-600 line-clamp-2 mb-3">{{ p.shortDesc }}</p>
+          </div>
+
+          <div class="flex items-center justify-between pt-2 border-t border-slate-200/60 mt-1">
+            <span class="text-xs font-semibold text-emerald-600 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Aktif
+            </span>
+            <button
+              type="button"
+              class="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1"
+              @click="openDemoModal(p)"
+            >
+              <AppIcon name="sparkles" :size="12" />
+              <span>Coba Demo</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div v-else class="text-center py-6 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+        <AppIcon name="sparkles" :size="28" class="text-slate-400 mx-auto mb-1" />
+        <p class="text-xs font-semibold text-slate-600">Belum ada add-on plugin yang diaktifkan.</p>
+        <router-link to="/app/plugins" class="text-xs text-purple-600 font-bold hover:underline mt-1 inline-block">
+          Jelajahi 7 Plugin di Marketplace →
+        </router-link>
+      </div>
+    </BaseCard>
 
     <!-- Invoices & Billing History Table -->
     <BaseCard>
@@ -131,6 +211,13 @@
 
     <!-- Upgrade Plan Modal -->
     <UpgradePlanModal v-model="showUpgradeModal" />
+
+    <!-- Interactive Plugin Demo Simulator Modal -->
+    <PluginDemoModal
+      v-model="showDemoModal"
+      :plugin="selectedDemoPlugin"
+      @install-requested="handleInstallFromModal"
+    />
   </div>
 </template>
 
@@ -141,34 +228,39 @@ import BaseButton from '@/shared/components/ui/BaseButton.vue'
 import BaseBadge from '@/shared/components/ui/BaseBadge.vue'
 import AppIcon from '@/shared/components/icons/AppIcon.vue'
 import UpgradePlanModal from '../components/UpgradePlanModal.vue'
+import PluginDemoModal from '../components/PluginDemoModal.vue'
+import { usePluginStore } from '@/shared/stores/pluginStore'
 import { useToast } from '@/shared/composables/useToast'
 
 const toast = useToast()
+const pluginStore = usePluginStore()
 const showUpgradeModal = ref(false)
+const showDemoModal = ref(false)
+const selectedDemoPlugin = ref(null)
 
 const invoices = ref([
   {
     id: 'inv-03',
     number: 'INV-SUB-202610-092',
-    plan: 'Pro Plan (Bulanan)',
+    plan: 'Business Pro Plan (Bulanan)',
     period: '25 Okt 2026 - 25 Nov 2026',
-    amount: 299000,
+    amount: 129000,
     paidDate: '2026-10-25 00:01'
   },
   {
     id: 'inv-02',
     number: 'INV-SUB-202609-085',
-    plan: 'Pro Plan (Bulanan)',
+    plan: 'Business Pro Plan (Bulanan)',
     period: '25 Sep 2026 - 25 Okt 2026',
-    amount: 299000,
+    amount: 129000,
     paidDate: '2026-09-25 00:02'
   },
   {
     id: 'inv-01',
     number: 'INV-SUB-202608-011',
-    plan: 'Pro Plan (Bulanan)',
+    plan: 'Business Pro Plan (Bulanan)',
     period: '25 Agu 2026 - 25 Sep 2026',
-    amount: 299000,
+    amount: 129000,
     paidDate: '2026-08-25 08:30'
   }
 ])
@@ -184,6 +276,16 @@ function formatRp(val) {
 
 function downloadInvoice(inv) {
   toast.success(`Mengunduh faktur PDF ${inv.number}...`)
+}
+
+function openDemoModal(plugin) {
+  selectedDemoPlugin.value = plugin
+  showDemoModal.value = true
+}
+
+function handleInstallFromModal(plugin) {
+  pluginStore.togglePlugin(plugin.id)
+  showDemoModal.value = false
 }
 </script>
 
@@ -208,6 +310,27 @@ function downloadInvoice(inv) {
   margin-top: 0.25rem;
 }
 
+.header-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  background: #ffffff;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.header-link-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
 .active-plan-card {
   background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #4338ca 100%);
   border-radius: 20px;
@@ -216,7 +339,6 @@ function downloadInvoice(inv) {
   box-shadow: 0 16px 36px -10px rgba(30, 58, 138, 0.35);
   position: relative;
   overflow: hidden;
-  margin-bottom: 1.5rem;
 }
 
 .data-table {
@@ -240,4 +362,12 @@ function downloadInvoice(inv) {
   border-bottom: 1px solid #f1f5f9;
   vertical-align: middle;
 }
+
+.tag-purple { background: #f3e8ff; color: #7e22ce; }
+.tag-emerald { background: #ecfdf5; color: #047857; }
+.tag-cyan { background: #ecfeff; color: #0e7490; }
+.tag-blue { background: #eff6ff; color: #1d4ed8; }
+.tag-indigo { background: #e0e7ff; color: #4338ca; }
+.tag-amber { background: #fef3c7; color: #b45309; }
+.tag-rose { background: #ffe4e6; color: #be123c; }
 </style>

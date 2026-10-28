@@ -98,14 +98,108 @@
             <span>Buka Portal Tenant</span>
           </router-link>
 
-          <!-- Superadmin Avatar / Profile Link -->
-          <router-link to="/app/profile" class="superadmin-profile" title="Lihat Profil Saya">
-            <div class="admin-avatar">SA</div>
-            <div class="admin-meta">
-              <span class="admin-name">Superadmin (Owner POS)</span>
-              <span class="admin-tag">Full Platform Access</span>
-            </div>
-          </router-link>
+          <!-- Superadmin Avatar / Profile Popup Dropdown -->
+          <div class="user-profile-wrapper" ref="profileDropdownRef">
+            <button
+              type="button"
+              class="user-profile-btn superadmin-profile-btn"
+              :class="{ 'is-active': isProfileOpen }"
+              aria-label="Menu Superadmin"
+              @click="isProfileOpen = !isProfileOpen"
+            >
+              <img
+                :src="platformStore.superadmin?.avatar"
+                :alt="platformStore.superadmin?.name"
+                class="user-avatar admin-avatar-img"
+              />
+              <div class="user-meta">
+                <span class="user-name">{{ platformStore.superadmin?.name || 'Abdulloh Najib' }}</span>
+                <span class="user-role">{{ platformStore.superadmin?.role || 'Superadmin SaaS' }}</span>
+              </div>
+              <AppIcon
+                name="chevron-down"
+                :size="14"
+                custom-class="profile-chevron"
+                :style="{ transform: isProfileOpen ? 'rotate(180deg)' : 'none' }"
+              />
+            </button>
+
+            <!-- Dropdown Popup Menu -->
+            <Transition name="dropdown-spring">
+              <div v-if="isProfileOpen" class="user-dropdown-menu">
+                <div class="dropdown-user-header superadmin-dropdown-header">
+                  <img
+                    :src="platformStore.superadmin?.avatar"
+                    :alt="platformStore.superadmin?.name"
+                    class="dropdown-avatar"
+                  />
+                  <div class="dropdown-user-info">
+                    <strong>{{ platformStore.superadmin?.name }}</strong>
+                    <span class="dropdown-email">{{ platformStore.superadmin?.email }}</span>
+                    <span class="dropdown-badge badge-purple">Root Level 0 (Full Access)</span>
+                  </div>
+                </div>
+
+                <div class="dropdown-menu-list">
+                  <router-link
+                    to="/platform/profile"
+                    class="dropdown-menu-item"
+                    @click="isProfileOpen = false"
+                  >
+                    <AppIcon name="user" :size="16" />
+                    <span>Lihat Profil & Pengaturan</span>
+                  </router-link>
+
+                  <!-- <router-link
+                    to="/platform/plugins"
+                    class="dropdown-menu-item"
+                    @click="isProfileOpen = false"
+                  >
+                    <AppIcon name="sparkles" :size="16" />
+                    <span>Kelola Katalog Plugin</span>
+                  </router-link>
+
+                  <router-link
+                    to="/platform/plans"
+                    class="dropdown-menu-item"
+                    @click="isProfileOpen = false"
+                  >
+                    <AppIcon name="credit-card" :size="16" />
+                    <span>Kelola Paket Langganan</span>
+                  </router-link>
+
+                  <router-link
+                    to="/platform/tenants"
+                    class="dropdown-menu-item"
+                    @click="isProfileOpen = false"
+                  >
+                    <AppIcon name="store" :size="16" />
+                    <span>Daftar Klien Tenant</span>
+                  </router-link> -->
+
+                  <hr class="dropdown-divider" />
+
+                  <router-link
+                    to="/app/dashboard"
+                    class="dropdown-menu-item item-tenant"
+                    @click="isProfileOpen = false"
+                  >
+                    <AppIcon name="store" :size="16" />
+                    <span>Beralih ke Mode Tenant</span>
+                  </router-link>
+
+                  <router-link
+                    to="/login"
+                    class="dropdown-menu-item item-logout"
+                    @click="isProfileOpen = false"
+                  >
+                    <AppIcon name="log-out" :size="16" />
+                    <span>Keluar / Logout</span>
+                  </router-link>
+                </div>
+              </div>
+            </Transition>
+          </div>
         </div>
       </header>
 
@@ -125,15 +219,34 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, RouterView, RouterLink } from 'vue-router'
 import { usePlatformStore } from '../../modules/platform/stores/platformStore'
+import { usePluginStore } from '../../shared/stores/pluginStore'
 import AppIcon from '../../shared/components/icons/AppIcon.vue'
 import ToastContainer from '../../shared/components/ui/ToastContainer.vue'
 
 const platformStore = usePlatformStore()
+const pluginStore = usePluginStore()
 const route = useRoute()
 const isCollapsed = ref(false)
+
+const isProfileOpen = ref(false)
+const profileDropdownRef = ref(null)
+
+const handleClickOutside = (e) => {
+  if (profileDropdownRef.value && !profileDropdownRef.value.contains(e.target)) {
+    isProfileOpen.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 
 const formatNumber = (num) => new Intl.NumberFormat('id-ID').format(Number(num) || 0)
 
@@ -147,8 +260,10 @@ const navItems = computed(() => [
   { label: 'Ringkasan Platform', path: '/platform/dashboard', icon: 'dashboard' },
   { label: 'Kelola Tenant (Klien)', path: '/platform/tenants', icon: 'store', badge: String(platformStore.totalTenants ?? 0), badgeType: 'primary' },
   { label: 'Paket Langganan', path: '/platform/plans', icon: 'credit-card', badge: String(platformStore.plans?.length ?? 0), badgeType: 'purple' },
+  { label: 'Katalog Plugin SaaS', path: '/platform/plugins', icon: 'sparkles', badge: String(pluginStore.plugins?.length ?? 0), badgeType: 'purple' },
   { label: 'Domain & DNS SaaS', path: '/platform/domains', icon: 'globe' },
-  { label: 'Audit Logs Aktivitas', path: '/platform/audit-logs', icon: 'shield' }
+  { label: 'Audit Logs Aktivitas', path: '/platform/audit-logs', icon: 'shield' },
+  { label: 'Profil & Pengaturan', path: '/platform/profile', icon: 'settings' }
 ])
 </script>
 
@@ -460,42 +575,199 @@ const navItems = computed(() => [
   box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
 }
 
-.superadmin-profile {
+/* Superadmin Profile Popup Dropdown Trigger */
+.user-profile-wrapper {
+  position: relative;
+}
+
+.superadmin-profile-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px 10px 4px 6px;
+  gap: 10px;
+  padding: 4px 12px 4px 5px;
   border-radius: var(--radius-full);
   background-color: var(--slate-100);
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
 }
 
-.admin-avatar {
-  width: 30px;
-  height: 30px;
+.superadmin-profile-btn:hover {
+  background-color: #ede9fe;
+  border-color: #c7d2fe;
+}
+
+.superadmin-profile-btn.is-active {
+  background-color: #ede9fe;
+  border-color: #818cf8;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.admin-avatar-img {
+  width: 34px;
+  height: 34px;
   border-radius: var(--radius-full);
-  background-color: #4338ca;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 800;
+  object-fit: cover;
+  border: 2px solid #818cf8;
 }
 
-.admin-meta {
+.user-meta {
   display: flex;
   flex-direction: column;
+  text-align: left;
 }
 
-.admin-name {
-  font-size: 12px;
+.user-name {
+  font-size: 12.5px;
   font-weight: 700;
   color: var(--text-main);
+  line-height: 1.2;
 }
 
-.admin-tag {
+.user-role {
+  font-size: 10.5px;
+  color: #64748b;
+}
+
+.profile-chevron {
+  color: #64748b;
+  transition: transform var(--duration-fast) ease;
+}
+
+/* User Dropdown Menu */
+.user-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 270px;
+  background-color: #ffffff;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-app);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
+  z-index: 200;
+  overflow: hidden;
+}
+
+.superadmin-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, #f5f3ff 0%, #eff6ff 100%);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.dropdown-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  border: 2px solid #818cf8;
+}
+
+.dropdown-user-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dropdown-user-info strong {
+  font-size: 13.5px;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-email {
+  font-size: 11px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-badge.badge-purple {
   font-size: 10px;
-  color: var(--text-muted);
+  font-weight: 700;
+  color: #7e22ce;
+  background-color: #f3e8ff;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-top: 4px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.dropdown-menu-list {
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+}
+
+.dropdown-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+  background: none;
+  border: none;
+  text-decoration: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.dropdown-menu-item:hover {
+  background-color: #f1f5f9;
+  color: #4338ca;
+}
+
+.dropdown-divider {
+  border: 0;
+  height: 1px;
+  background-color: #f1f5f9;
+  margin: 4px 6px;
+}
+
+.item-tenant {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.item-tenant:hover {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.item-logout {
+  color: #ef4444;
+}
+
+.item-logout:hover {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+/* Dropdown Spring Animation */
+.dropdown-spring-enter-active {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dropdown-spring-leave-active {
+  transition: all 0.15s ease-in;
+}
+.dropdown-spring-enter-from {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.96);
+}
+.dropdown-spring-leave-to {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.98);
 }
 
 .page-container {

@@ -161,6 +161,7 @@ const menuGroups = [
       { label: 'Profil Pengguna', path: '/app/profile', icon: 'user' },
       { label: 'Pengaturan Bisnis', path: '/app/settings', icon: 'settings' },
       { label: 'Domain & Subdomain', path: '/app/domains', icon: 'globe' },
+      { label: 'Plugin & Ekstensi', path: '/app/plugins', icon: 'sparkles', badge: 'Add-on', badgeType: 'purple' },
       { label: 'Paket Langganan', path: '/app/subscription', icon: 'credit-card' }
     ]
   }

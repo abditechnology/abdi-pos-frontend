@@ -20,8 +20,9 @@ Bahasa yang digunakan di sini santai, ringan, dan langsung ke intinya agar Anda 
 10. [Membaca Laporan Keuangan & Analitik Bisnis](#10-membaca-laporan-keuangan--analitik-bisnis)
 11. [Mengelola Cabang & Staf Karyawan (Hak Akses RBAC)](#11-mengelola-cabang--staf-karyawan-hak-akses-rbac)
 12. [Pengaturan Toko, Custom Domain & Paket Langganan SaaS](#12-pengaturan-toko-custom-domain--paket-langganan-saas)
-13. [Konsol Eksklusif Superadmin (SaaS Owner)](#13-konsol-eksklusif-superadmin-saas-owner)
-14. [Tanya Jawab Singkat (FAQ)](#14-tanya-jawab-singkat-faq)
+13. [Marketplace Plugin & Ekstensi Modular (Add-on Bisnis)](#13-marketplace-plugin--ekstensi-modular-add-on-bisnis)
+14. [Konsol Eksklusif Superadmin (SaaS Owner)](#14-konsol-eksklusif-superadmin-saas-owner)
+15. [Tanya Jawab Singkat (FAQ)](#15-tanya-jawab-singkat-faq)
 
 ---
 
@@ -182,23 +183,77 @@ Buka menu **"Laporan Penjualan"** (`/app/reports`):
 
 Buka kelompok menu *PENGATURAN* di sidebar:
 1. **Pengaturan Bisnis (`/app/settings`)**:
-   - Layout formulir kini didesain sangat lapang dan terstruktur per bagian: **Profil Bisnis & Brand**, **Operasional & Pajak Penjualan (PPN)**, dan **Format Struk Kasir**.
+   - Layout formulir didesain lapang dan terstruktur per bagian: **Profil Bisnis & Brand**, **Operasional & Pajak Penjualan (PPN)**, dan **Format Struk Kasir**.
    - Input nama brand toko, tagline, nomor kontak WhatsApp, tarif pajak persentase, dan ucapan terima kasih pada struk tertata dengan jarak vertikal yang nyaman dibaca dan mudah diedit.
 2. **Domain & Subdomain (`/app/domains`)**:
    - Subdomain gratis bawaan (misal `abdimartabak.abdipos.com`) selalu aktif dengan sertifikat HTTPS aman.
    - Ingin pakai domain toko sendiri? Klik **"Hubungkan Custom Domain"**, ketik domain Anda (misal `order.tokoanda.com`), lalu ikuti panduan mengarahkan DNS CNAME ke `cname.abdipos.com`.
 3. **Paket Langganan (`/app/subscription`)**:
-   - Cek kuota cabang terpakai, jumlah kasir aktif, dan tanggal penagihan berikutnya.
-   - Klik **"Upgrade / Kelola Paket"** untuk beralih ke paket Enterprise jika cabang toko Anda bertambah banyak.
-   - Unduh faktur tagihan bulanan resmi dalam format PDF.
+   - Menampilkan paket aktif saat ini (**Business Pro — Rp 129.000 / bulan**), pemakaian kuota (cabang, staf kasir, katalog produk, struk transaksi), serta daftar faktur tagihan resmi (PDF).
+   - Klik **"Pilihan Paket"** untuk membuka modal komparasi 4 paket resmi Abdi POS:
+     - 🆓 **Free Plan (Rp 0)**: Trial 30 hari penuh, 1 cabang, 1 kasir, maks. 20 menu, shift kasir & laporan harian dasar.
+     - 💡 **Ekonomis UMKM (Rp 49.000 / bln)**: 2 cabang, 3 staf, maks. 50 menu, transaksi tanpa batas, manajemen stok, serta **Program Member & Poin** dan **Diskon & Bundling Promo**.
+     - ⭐ **Business Pro (Rp 129.000 / bln - Best Seller)**: Hingga 5 cabang, 10 staf kasir/supervisor, maks. 100 menu, Kitchen Display System (KDS Kanban), Standee QR Meja Self-Order, Resep & HPP Bahan Baku otomatis, dan laporan laba rugi lengkap.
+     - 🏢 **Enterprise (Rp 299.000 / bln)**: Hingga 10 cabang, 50 akun staf, maks. 250 menu, custom domain toko (.com / .id), transfer stok antar-cabang, dan konsolidasi multi-cabang.
+   - Di halaman ini juga terdapat seksi **"Plugin & Ekstensi Aktif"** yang merangkum add-on tambahan yang sedang terpasang di toko Anda.
 
 ---
 
-## 13. Konsol Eksklusif Superadmin (SaaS Owner) & Animasi Loading Transisi Mode
+## 13. Marketplace Plugin & Ekstensi Modular (Add-on Bisnis)
+
+Buka menu **"Plugin & Ekstensi"** (`/app/plugins`):
+
+Abdi POS mengusung konsep **Modular Plugin Architecture**. Pemilik toko salon, barbershop, laundry, bengkel, spa, ekspedisi, maupun ritel tidak perlu membayar biaya paket mahal untuk fitur yang tidak dipakai. Cukup pasang plugin yang dibutuhkan dengan biaya mikro bulanan terjangkau:
+
+### Daftar 7 Plugin Modular Resmi:
+1. 📸 **Absensi Selfie & Geofencing GPS (Rp 20.000 / bln)**:
+   - Jam masuk & pulang (clock in/out) wajib foto selfie wajah dari layar kasir/tablet.
+   - Deteksi radius GPS toko otomatis (maksimal 50 meter) untuk mencegah titip absen.
+2. ✂️ **Kalkulator Komisi Staf & Terapis (Rp 25.000 / bln)**:
+   - Hitung komisi otomatis per pengerjaan jasa treatment (misal 20% potong rambut) atau barang ritel.
+   - Pilih nama kapster/terapis langsung dari layar kasir POS.
+3. 🤖 **WhatsApp Bot & Notifikasi Status Otomatis (Rp 29.000 / bln)**:
+   - Mengirimkan pesan WhatsApp otomatis ke pelanggan saat cucian laundry selesai, servis barang tuntas, atau pesanan siap diambil.
+4. 🎁 **WhatsApp Broadcast & Pengingat Ultah (Rp 25.000 / bln)**:
+   - Otomatis kirim ucapan selamat ulang tahun berhadiah voucher diskon ke pelanggan terdaftar.
+   - Kirim broadcast promo akhir pekan ke seluruh pelanggan dengan 1 kali klik.
+5. 📅 **Reservasi & Booking Jadwal Mandiri Online (Rp 35.000 / bln)**:
+   - Menyediakan link booking mandiri untuk pelanggan dari rumah.
+   - Pelanggan bebas memilih jam kosong, jenis perawatan, dan staf favorit.
+6. 📝 **Kas Bon / Pembukuan Piutang Pelanggan (Rp 15.000 / bln)**:
+   - Tombol bayar *"Kas Bon"* di kasir POS untuk pelanggan langganan.
+   - Batas limit kredit per orang, riwayat pelunasan bertahap, dan pengingat tagihan ramah via WA.
+7. 📊 **Catat Biaya Operasional & Laba Bersih / Net Profit (Rp 29.000 / bln)**:
+   - Catat pengeluaran non-bahan baku seperti listrik PLN, sewa tempat, gaji karyawan, dan kantong kresek.
+   - Menghasilkan laporan Laba Bersih riil (*Net Profit*) dan arus kas (*Cash Flow*).
+
+> [!TIP]
+> **Coba Langsung via Simulator Demo Interaktif:**  
+> Sebelum memutuskan mengaktifkan plugin, klik tombol **"Simulasi Demo"** pada setiap kartu plugin. Anda dapat mencoba langsung jepretan kamera selfie GPS, kalkulator hitung komisi terapis, simulasi obrolan bubble WhatsApp bot, kalender reservasi, hingga kalkulator laba bersih!
+
+---
+
+## 14. Konsol Eksklusif Superadmin (SaaS Owner) & Animasi Loading Transisi Mode
 
 Fitur khusus bagi **Pemilik Platform Abdi POS** untuk mengontrol ekosistem multi-tenant:
 - Buka URL **`http://localhost:5173/platform/dashboard`** atau klik tombol perisai **"Konsol Superadmin (Owner)"** di bagian bawah sidebar.
 - Pantau total MRR (pendapatan bulanan SaaS), daftar semua pemilik toko yang terdaftar, buat paket harga langganan baru, verifikasi DNS custom domain klien, dan pantau rekaman audit keamanan.
+
+### 🧩 Kelola Katalog Plugin & Ekstensi Modular (`/platform/plugins`)
+- Halaman konfigurasi khusus Superadmin untuk mengatur seluruh ekosistem add-on modular yang ditawarkan kepada tenant (mirip dengan halaman Paket Langganan).
+- **Fitur Utama**:
+  - **Statistik Add-on**: Total plugin tersedia, total tenant yang memasang, estimasi MRR add-on, dan rata-rata harga plugin.
+  - **Grid Konfigurasi Plugin**: Mengubah harga bulanan plugin, target sektor industri, kategori, ikon, daftar fitur (checklist), dan tipe simulasi demo.
+  - **Tambah & Hapus Plugin**: Tombol *"+ Tambah Plugin Baru"* untuk meluncurkan modul add-on baru ke marketplace tenant.
+  - **Tabel Breakdown Tenant**: Memeriksa bisnis/tenant mana saja yang sedang aktif memasang setiap plugin tertentu.
+
+### 👤 Profil & Pengaturan Akun Superadmin (`/platform/profile`)
+- **Popup Menu Profil di Kanan Atas**: Mengklik widget avatar/profil superadmin di pojok kanan atas konsol akan memunculkan menu popup dropdown (seperti pada mode tenant) dengan opsi cepat: *Lihat Profil & Pengaturan*, *Kelola Plugin*, *Kelola Paket*, dan *Beralih ke Mode Tenant*.
+- **Halaman Profil & Pengaturan yang Rapi**:
+  - Tombol aksi *"Ubah Data Profil"* dan *"Ganti Password"* kini diletakkan di dalam hero kartu dengan jarak ikon yang proporsional dan teks tidak lagi menimpa pola banner.
+  - **Identitas Pemilik SaaS**: Ubah nama lengkap, email resmi superadmin, nomor WhatsApp, jabatan, dan lokasi operasional.
+  - **Keamanan Akun Root**: Sakelar Autentikasi Dua Faktor (2FA), pergantian kata sandi root berkala, monitoring daftar sesi perangkat aktif, dan pemutusan sesi perangkat lain.
+  - **Preferensi Platform SaaS**: Pengaktifan *Maintenance Mode* global jika platform sedang melakukan pemeliharaan server, pengaturan notifikasi email sistem, dan pemicu backup basis data harian (02:00 WIB).
 
 ### 🌟 Animasi Loading Perpindahan Mode (Tenant ⇄ Superadmin)
 Ketika Anda berpindah dari dashboard toko biasa menuju konsol superadmin (atau sebaliknya):
@@ -216,7 +271,7 @@ Ketika Anda berpindah dari dashboard toko biasa menuju konsol superadmin (atau s
 
 ---
 
-## 14. Tanya Jawab Singkat (FAQ)
+## 15. Tanya Jawab Singkat (FAQ)
 
 **T: Bagaimana jika ada pesanan yang salah ketik saat transaksi sudah selesai dibayar?**  
 *J: Buka menu "Riwayat Transaksi", klik tombol "Lihat Struk" pada transaksi tersebut, lalu klik tombol merah "Void / Batalkan Struk". Masukkan alasan pembatalan dan struk akan dibatalkan secara aman.*

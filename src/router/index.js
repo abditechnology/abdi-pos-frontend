@@ -6,8 +6,10 @@ import PlatformLayout from '../app/layouts/PlatformLayout.vue'
 import PlatformDashboardPage from '../modules/platform/pages/PlatformDashboardPage.vue'
 import PlatformTenantsPage from '../modules/platform/pages/PlatformTenantsPage.vue'
 import PlatformPlansPage from '../modules/platform/pages/PlatformPlansPage.vue'
+import PlatformPluginsPage from '../modules/platform/pages/PlatformPluginsPage.vue'
 import PlatformDomainsPage from '../modules/platform/pages/PlatformDomainsPage.vue'
 import PlatformAuditLogsPage from '../modules/platform/pages/PlatformAuditLogsPage.vue'
+import PlatformProfilePage from '../modules/platform/pages/PlatformProfilePage.vue'
 
 // Auth module pages
 import LoginPage from '../modules/auth/pages/LoginPage.vue'
@@ -186,6 +188,16 @@ const router = createRouter({
           }
         },
         {
+          path: 'plugins',
+          name: 'plugins',
+          component: () => import('../modules/settings/pages/PluginMarketplacePage.vue'),
+          meta: {
+            title: 'Plugin & Ekstensi Modular',
+            description: 'Koleksi plugin modular tambahan (add-on) untuk operasional salon, spa, laundry, dan retail.',
+            icon: 'sparkles'
+          }
+        },
+        {
           path: 'subscription',
           name: 'subscription',
           component: () => import('../modules/settings/pages/SubscriptionPage.vue'),
@@ -238,6 +250,12 @@ const router = createRouter({
           meta: { title: 'Paket Langganan SaaS' }
         },
         {
+          path: 'plugins',
+          name: 'platform-plugins',
+          component: PlatformPluginsPage,
+          meta: { title: 'Kelola Plugin & Ekstensi Modular' }
+        },
+        {
           path: 'domains',
           name: 'platform-domains',
           component: PlatformDomainsPage,
@@ -248,6 +266,12 @@ const router = createRouter({
           name: 'platform-audit-logs',
           component: PlatformAuditLogsPage,
           meta: { title: 'Audit Trail Superadmin' }
+        },
+        {
+          path: 'profile',
+          name: 'platform-profile',
+          component: PlatformProfilePage,
+          meta: { title: 'Profil & Pengaturan Superadmin' }
         }
       ]
     },
