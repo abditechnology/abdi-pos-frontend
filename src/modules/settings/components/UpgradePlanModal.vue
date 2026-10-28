@@ -24,13 +24,13 @@
           </div>
           <ul class="plan-features">
             <li><span class="tick">✓</span> 1 Cabang Outlet</li>
-            <li><span class="tick">✓</span> 1 Akun Staf / Kasir</li>
+            <li><span class="tick">✓</span> 1 Akun</li>
             <li><span class="tick">✓</span> Katalog Maks. 20 Menu</li>
-            <li><span class="tick">✓</span> Buka-Tutup Shift Kasir</li>
+            <li><span class="tick">✓</span> Maks. 50 Transaksi</li>
             <li><span class="tick">✓</span> Laporan Penjualan Harian</li>
+            <li class="disabled"><span class="cross">✕</span> Buka-Tutup Shift Kasir</li>
             <li class="disabled"><span class="cross">✕</span> Program Member & Poin</li>
-            <li class="disabled"><span class="cross">✕</span> Diskon & Bundling Promo</li>
-            <li class="disabled"><span class="cross">✕</span> Kitchen Display & Meja QR</li>
+            <li class="disabled"><span class="cross">✕</span> Kitchen Display (KDS)</li>
           </ul>
           <BaseButton variant="secondary" size="sm" class="w-full mt-4" disabled>
             Trial Selesai
@@ -46,16 +46,16 @@
             <p class="plan-desc">Solusi hemat & lengkap untuk pemilik usaha mandiri</p>
           </div>
           <ul class="plan-features">
-            <li><span class="tick">✓</span> Hingga 2 Cabang Outlet</li>
-            <li><span class="tick">✓</span> 3 Akun Staf (1 Owner, 2 Kasir)</li>
-            <li><span class="tick">✓</span> Katalog Maks. 50 Menu</li>
-            <li><span class="tick">✓</span> Transaksi Tanpa Batas (Unlimited)</li>
-            <li><span class="tick">✓</span> Stok Inventaris & Mutasi Bahan</li>
+            <li><span class="tick">✓</span> 1 Cabang Outlet</li>
+            <li><span class="tick">✓</span> 2 Akun</li>
+            <li><span class="tick">✓</span> Katalog Maks. 20 Menu</li>
+            <li><span class="tick">✓</span> Maks. 50 Transaksi Harian</li>
+            <li><span class="tick">✓</span> Stok Inventaris & Bahan</li>
             <li class="highlight-feature"><span class="tick">✓</span> <strong>Member & Poin Loyalitas</strong></li>
             <li class="highlight-feature"><span class="tick">✓</span> <strong>Diskon & Bundling Promo</strong></li>
-            <li><span class="tick">✓</span> Rekonsiliasi Kas Shift</li>
-            <li class="disabled"><span class="cross">✕</span> Kitchen Display & Meja QR</li>
-            <li class="disabled"><span class="cross">✕</span> Custom Domain Toko</li>
+            <li><span class="tick">✓</span> Ekspor Laporan CSV/Excel</li>
+            <li class="disabled"><span class="cross">✕</span> Buka-Tutup Shift Kasir</li>
+            <li class="disabled"><span class="cross">✕</span> Kitchen Display (KDS)</li>
           </ul>
           <BaseButton
             variant="outline"
@@ -74,19 +74,19 @@
           <div class="plan-header">
             <div class="plan-badge-top badge-blue">Best Seller</div>
             <span class="plan-name text-blue-700">Business Pro</span>
-            <div class="plan-price font-mono text-blue-900">Rp 129.000<span class="price-period">/bln</span></div>
+            <div class="plan-price font-mono text-blue-900">Rp 149.000<span class="price-period">/bln</span></div>
             <p class="plan-desc">Favorit cafe, salon, resto & retail berkembang</p>
           </div>
           <ul class="plan-features">
-            <li><span class="tick">✓</span> Hingga 5 Cabang Outlet</li>
-            <li><span class="tick">✓</span> 10 Akun Staf & Supervisor</li>
-            <li><span class="tick">✓</span> Katalog Maks. 100 Menu</li>
-            <li><span class="tick">✓</span> Semua Fitur Paket Ekonomis</li>
-            <li class="highlight-feature"><span class="tick">✓</span> <strong>Kitchen Display System (KDS)</strong></li>
-            <li class="highlight-feature"><span class="tick">✓</span> <strong>Self-Order Meja QR Digital</strong></li>
+            <li><span class="tick">✓</span> Maks. 2 Cabang Outlet</li>
+            <li><span class="tick">✓</span> 5 Akun</li>
+            <li><span class="tick">✓</span> Katalog Maks. 50 Menu</li>
+            <li><span class="tick">✓</span> Transaksi Tanpa Batas (Unlimited)</li>
+            <li><span class="tick">✓</span> Semua Fitur Paket UMKM</li>
+            <li class="highlight-feature"><span class="tick">✓</span> <strong>Buka-Tutup Shift & Kas</strong></li>
             <li><span class="tick">✓</span> Resep Bahan Baku & HPP Otomatis</li>
-            <li><span class="tick">✓</span> Hak Akses Staf Bertingkat (RBAC)</li>
             <li><span class="tick">✓</span> Laporan Analitik Multi-Cabang</li>
+            <li class="disabled"><span class="cross">✕</span> Kitchen Display (KDS)</li>
             <li class="disabled"><span class="cross">✕</span> Custom Domain Toko</li>
           </ul>
           <BaseButton variant="primary" size="sm" class="w-full mt-4" disabled>
@@ -104,14 +104,15 @@
           </div>
           <ul class="plan-features">
             <li><span class="tick">✓</span> Hingga 10 Cabang Outlet</li>
-            <li><span class="tick">✓</span> 50 Akun Staf & Supervisor</li>
-            <li><span class="tick">✓</span> Katalog Maks. 250 Menu</li>
+            <li><span class="tick">✓</span> 20 Akun</li>
+            <li><span class="tick">✓</span> Katalog Maks. 100 Menu</li>
             <li><span class="tick">✓</span> Semua Fitur Business Pro</li>
+            <li class="highlight-feature"><span class="tick">✓</span> <strong>Kitchen Display System (KDS)</strong></li>
             <li class="highlight-feature"><span class="tick">✓</span> <strong>Custom Domain (.com / .id)</strong></li>
             <li><span class="tick">✓</span> Multi-Outlet Central Dashboard</li>
             <li><span class="tick">✓</span> Transfer Stok Antar-Cabang</li>
             <li><span class="tick">✓</span> Konsolidasi Finansial Multi-Cabang</li>
-            <li><span class="tick">✓</span> Prioritas Update & Fitur Eksklusif</li>
+            <li><span class="tick">✓</span> Hak Akses Tingkat Lanjut</li>
           </ul>
           <BaseButton
             variant="primary"
@@ -129,7 +130,7 @@
       <div class="plugin-addon-notice">
         <AppIcon name="sparkles" :size="16" class="text-purple-600 shrink-0" />
         <span class="text-xs text-slate-600">
-          Butuh fitur spesifik seperti <strong>Absensi Selfie GPS, Komisi Karyawan, Bot WhatsApp, atau Booking Online</strong>?
+          Butuh fitur spesifik seperti <strong>Absensi Selfie GPS, Komisi Karyawan, Meja QR Self-Order, Bot WhatsApp, atau Booking Online</strong>?
           Tersedia add-on plugin mulai <strong>Rp 15.000/bln</strong> di
           <router-link to="/app/plugins" class="font-bold text-purple-700 hover:underline" @click="$emit('update:modelValue', false)">
             Marketplace Plugin

@@ -104,7 +104,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useProductStore } from '../stores/productStore'
 import BaseButton from '../../../shared/components/ui/BaseButton.vue'
 import ConfirmModal from '../../../shared/components/ui/ConfirmModal.vue'
@@ -112,6 +112,11 @@ import AppIcon from '../../../shared/components/icons/AppIcon.vue'
 import CategoryModal from '../components/CategoryModal.vue'
 
 const productStore = useProductStore()
+
+onMounted(() => {
+  productStore.fetchCategories()
+  productStore.fetchProducts()
+})
 
 const isModalOpen = ref(false)
 const selectedCategory = ref(null)

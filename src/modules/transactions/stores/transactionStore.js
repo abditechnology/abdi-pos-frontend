@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { shiftService } from '../../../shared/services/shiftService'
+import { orderService } from '../../../shared/services/orderService'
 
 export const useTransactionStore = defineStore('transaction', () => {
   const transactions = ref([
@@ -170,10 +172,91 @@ export const useTransactionStore = defineStore('transaction', () => {
   })
 
   // Actions
-  function addTransaction(txData) {
+  async function fetchShifts(params = {}) {
+    try {
+      const res = await shiftService.getShifts(params)
+      if (res?.data && Array.isArray(res.data)) {
+        shifts.value = res.data.map(s => ({
+          id: s.id,
+          outletId: s.outlet_id,
+          outletName: s.outlet_name,
+          cashierId: s.user_id,
+          cashierName: s.cashier_name,
+          openedAt: s.opened_at,
+          closedAt: s.closed_at,
+          startingCash: s.starting_cash,
+          expectedCash: s.expected_cash,
+          actualCash: s.actual_cash,
+          cashDifference: s.difference || 0,
+          status: s.status ? s.status.toUpperCase() : 'OPEN',
+          notes: s.notes
+        }))
+      }
+    } catch (e) {
+      console.warn('Backend fetchShifts offline, using local shift data.')
+    }
+    return shifts.value
+  }
+
+  async function fetchCurrentShift(params = {}) {
+    try {
+      const res = await shiftService.getCurrentShift(params)
+      if (res?.data) {
+        const s = res.data
+        const mapped = {
+          id: s.id,
+          outletId: s.outlet_id,
+          outletName: s.outlet_name,
+          cashierId: s.user_id,
+          cashierName: s.cashier_name,
+          openedAt: s.opened_at,
+          closedAt: s.closed_at,
+          startingCash: s.starting_cash,
+          expectedCash: s.expected_cash,
+          actualCash: s.actual_cash,
+          cashDifference: s.difference || 0,
+          status: s.status ? s.status.toUpperCase() : 'OPEN',
+          notes: s.notes
+        }
+        const existingIdx = shifts.value.findIndex(item => item.id === s.id)
+        if (existingIdx !== -1) {
+          shifts.value[existingIdx] = mapped
+        } else {
+          shifts.value.unshift(mapped)
+        }
+        return mapped
+      }
+    } catch (e) {
+      console.warn('Backend fetchCurrentShift offline, using local active shift.')
+    }
+    return currentActiveShift.value
+  }
+
+  async function addTransaction(txData) {
+    let createdOrder = null
+    try {
+      const res = await orderService.createOrder({
+        outlet_id: txData.outletId,
+        customer_id: txData.customerId || null,
+        items: txData.items.map(item => ({
+          product_id: item.productId || item.id,
+          quantity: item.qty,
+          unit_price: item.price,
+        })),
+        payment_method: txData.paymentMethod || 'CASH',
+        paid_amount: txData.amountPaid || txData.total,
+        notes: txData.notes,
+      })
+      if (res?.data?.id) {
+        createdOrder = res.data
+      }
+    } catch (e) {
+      console.warn('Backend createOrder offline, stored locally.')
+    }
+
     const newTx = {
-      id: `tx-${Date.now()}`,
-      invoiceNumber: `INV-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${String(transactions.value.length + 1).padStart(3, '0')}`,
+      id: createdOrder?.id || `tx-${Date.now()}`,
+      invoiceNumber: createdOrder?.order_number || `INV-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${String(transactions.value.length + 1).padStart(3, '0')}`,
       date: new Date().toISOString().replace('T', ' ').slice(0, 19),
       status: 'PAID',
       ...txData
@@ -182,7 +265,13 @@ export const useTransactionStore = defineStore('transaction', () => {
     return newTx
   }
 
-  function voidTransaction(txId, reason, cashier) {
+  async function voidTransaction(txId, reason, cashier) {
+    try {
+      await orderService.voidOrder(txId, { reason })
+    } catch (e) {
+      console.warn('Backend voidOrder offline, voided locally.')
+    }
+
     const tx = transactions.value.find(t => t.id === txId)
     if (tx) {
       tx.status = 'VOID'
@@ -193,13 +282,28 @@ export const useTransactionStore = defineStore('transaction', () => {
     return false
   }
 
-  function openShift({ outletId, cashierId, cashierName, startingCash, notes }) {
+  async function openShift({ outletId, cashierId, cashierName, startingCash, notes }) {
+    let createdShift = null
+    try {
+      const res = await shiftService.openShift({
+        outlet_id: Number(outletId) || 1,
+        starting_cash: Number(startingCash) || 0,
+        notes: notes || 'Shift baru dibuka'
+      })
+      if (res?.data?.id) {
+        createdShift = res.data
+      }
+    } catch (e) {
+      console.warn('Backend openShift offline, opening locally:', e.message)
+    }
+
     const newShift = {
-      id: `shift-${Date.now()}`,
-      outletId,
-      cashierId,
-      cashierName,
-      openedAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
+      id: createdShift?.id || `shift-${Date.now()}`,
+      outletId: createdShift?.outlet_id || outletId,
+      outletName: createdShift?.outlet_name || 'Outlet Utama',
+      cashierId: createdShift?.user_id || cashierId,
+      cashierName: createdShift?.cashier_name || cashierName,
+      openedAt: createdShift?.opened_at || new Date().toISOString().replace('T', ' ').slice(0, 19),
       closedAt: null,
       startingCash: Number(startingCash) || 0,
       expectedCash: Number(startingCash) || 0,
@@ -212,7 +316,16 @@ export const useTransactionStore = defineStore('transaction', () => {
     return newShift
   }
 
-  function closeShift({ shiftId, actualCash, notes }) {
+  async function closeShift({ shiftId, actualCash, notes }) {
+    try {
+      await shiftService.closeShift(shiftId, {
+        actual_cash: Number(actualCash),
+        notes: notes || null
+      })
+    } catch (e) {
+      console.warn('Backend closeShift offline, closing locally:', e.message)
+    }
+
     const shift = shifts.value.find(s => s.id === shiftId)
     if (shift) {
       shift.closedAt = new Date().toISOString().replace('T', ' ').slice(0, 19)
@@ -230,6 +343,8 @@ export const useTransactionStore = defineStore('transaction', () => {
     shifts,
     totalPaidRevenue,
     currentActiveShift,
+    fetchShifts,
+    fetchCurrentShift,
     addTransaction,
     voidTransaction,
     openShift,

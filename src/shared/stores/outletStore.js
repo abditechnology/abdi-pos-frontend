@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useToast } from '../composables/useToast'
+import { outletService } from '../services/outletService'
 
 export const useOutletStore = defineStore('outlet', () => {
   const toast = useToast()
@@ -56,8 +57,44 @@ export const useOutletStore = defineStore('outlet', () => {
   }
 
   // Actions CRUD Cabang
-  const createOutlet = (data) => {
-    const newId = outlets.value.length ? Math.max(...outlets.value.map(o => o.id)) + 1 : 1
+  const fetchOutlets = async (params = {}) => {
+    try {
+      const res = await outletService.getOutlets(params)
+      if (res?.data && Array.isArray(res.data)) {
+        outlets.value = res.data.map((o, idx) => ({
+          id: o.id,
+          name: o.name,
+          code: o.code || `OUT-${String(o.id).padStart(2, '0')}`,
+          address: o.address || '',
+          phone: o.phone || '',
+          status: (o.status === 'active' || o.is_active) ? 'active' : 'inactive',
+          isPrimary: idx === 0 || Boolean(o.is_primary)
+        }))
+      }
+    } catch (e) {
+      console.warn('Backend fetchOutlets offline, using local outlet data.')
+    }
+    return outlets.value
+  }
+
+  const createOutlet = async (data) => {
+    let created = null
+    try {
+      const res = await outletService.createOutlet({
+        name: data.name,
+        code: data.code,
+        address: data.address,
+        phone: data.phone,
+        is_active: data.status !== 'inactive'
+      })
+      if (res?.data?.id) {
+        created = res.data
+      }
+    } catch (e) {
+      console.warn('Backend createOutlet offline, created locally.')
+    }
+
+    const newId = created?.id || (outlets.value.length ? Math.max(...outlets.value.map(o => o.id)) + 1 : 1)
     const newOutlet = {
       id: newId,
       name: data.name,
@@ -72,7 +109,19 @@ export const useOutletStore = defineStore('outlet', () => {
     return newOutlet
   }
 
-  const updateOutlet = (id, data) => {
+  const updateOutlet = async (id, data) => {
+    try {
+      await outletService.updateOutlet(id, {
+        name: data.name,
+        code: data.code,
+        address: data.address,
+        phone: data.phone,
+        is_active: data.status !== 'inactive'
+      })
+    } catch (e) {
+      console.warn('Backend updateOutlet offline, updated locally.')
+    }
+
     const index = outlets.value.findIndex(o => o.id === id)
     if (index !== -1) {
       outlets.value[index] = { ...outlets.value[index], ...data }
@@ -82,11 +131,18 @@ export const useOutletStore = defineStore('outlet', () => {
     return false
   }
 
-  const deleteOutlet = (id) => {
+  const deleteOutlet = async (id) => {
     if (outlets.value.length <= 1) {
       toast.error('Tidak dapat menghapus cabang terakhir bisnis Anda.', 'Gagal Hapus')
       return false
     }
+
+    try {
+      await outletService.deleteOutlet(id)
+    } catch (e) {
+      console.warn('Backend deleteOutlet offline, deleted locally.')
+    }
+
     const index = outlets.value.findIndex(o => o.id === id)
     if (index !== -1) {
       const deleted = outlets.value.splice(index, 1)[0]
@@ -104,6 +160,7 @@ export const useOutletStore = defineStore('outlet', () => {
     currentOutletId,
     currentOutlet,
     switchOutlet,
+    fetchOutlets,
     createOutlet,
     updateOutlet,
     deleteOutlet

@@ -209,7 +209,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useProductStore } from '../stores/productStore'
 import BaseButton from '../../../shared/components/ui/BaseButton.vue'
 import BaseInput from '../../../shared/components/ui/BaseInput.vue'
@@ -219,6 +219,11 @@ import AppIcon from '../../../shared/components/icons/AppIcon.vue'
 import ProductModal from '../components/ProductModal.vue'
 
 const productStore = useProductStore()
+
+onMounted(() => {
+  productStore.fetchProducts()
+  productStore.fetchCategories()
+})
 
 const searchQuery = ref('')
 const selectedCategory = ref('all')

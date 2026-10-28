@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useToast } from '../../../shared/composables/useToast'
 import { useOutletStore } from '../../../shared/stores/outletStore'
+import { inventoryService } from '../../../shared/services/inventoryService'
 
 export const useInventoryStore = defineStore('inventory', () => {
   const toast = useToast()
@@ -120,7 +121,40 @@ export const useInventoryStore = defineStore('inventory', () => {
   })
 
   // Actions
-  const adjustStock = (itemId, actualStock, reason = 'Opname Rutin') => {
+  const fetchStock = async (params = {}) => {
+    try {
+      const res = await inventoryService.getStock(params)
+      if (res?.data && Array.isArray(res.data)) {
+        rawMaterials.value = res.data.map(m => ({
+          id: m.id,
+          name: m.product?.name || m.name,
+          sku: m.product?.sku || m.sku,
+          category: m.category || 'Bahan Utama',
+          stock: Number(m.quantity || m.stock) || 0,
+          minStock: Number(m.min_stock || m.minStock) || 10,
+          unit: m.unit || 'Kg',
+          costPerUnit: Number(m.cost_per_unit || m.costPerUnit) || 0,
+          outletId: m.outlet_id || outletStore.currentOutletId,
+          lastUpdated: 'Sinkronisasi Backend'
+        }))
+      }
+    } catch (e) {
+      console.warn('Backend fetchStock offline, using local inventory data.')
+    }
+    return rawMaterials.value
+  }
+
+  const adjustStock = async (itemId, actualStock, reason = 'Opname Rutin') => {
+    try {
+      await inventoryService.adjustStock({
+        item_id: itemId,
+        actual_stock: Number(actualStock),
+        reason
+      })
+    } catch (e) {
+      console.warn('Backend adjustStock offline, adjusted locally.')
+    }
+
     const item = rawMaterials.value.find(m => m.id === itemId)
     if (item) {
       const diff = Number(actualStock) - item.stock
@@ -188,6 +222,7 @@ export const useInventoryStore = defineStore('inventory', () => {
     scopedMaterials,
     totalValue,
     lowStockCount,
+    fetchStock,
     adjustStock,
     createMaterial,
     updateMaterial,

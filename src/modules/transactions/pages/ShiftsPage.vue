@@ -239,7 +239,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import BaseCard from '@/shared/components/ui/BaseCard.vue'
 import BaseButton from '@/shared/components/ui/BaseButton.vue'
 import BaseBadge from '@/shared/components/ui/BaseBadge.vue'
@@ -248,6 +248,11 @@ import ShiftModal from '../components/ShiftModal.vue'
 import { useTransactionStore } from '../stores/transactionStore'
 
 const transactionStore = useTransactionStore()
+
+onMounted(() => {
+  transactionStore.fetchShifts()
+  transactionStore.fetchCurrentShift()
+})
 
 const showShiftModal = ref(false)
 const selectedShiftToClose = ref(null)

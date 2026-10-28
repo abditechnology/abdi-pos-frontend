@@ -250,16 +250,16 @@ Untuk menjaga konsistensi visual di seluruh halaman tanpa berdesakan (*cramped l
 Abdi POS mengimplementasikan arsitektur harga **Core-to-Value + Modular Add-on Marketplace**. Skema ini menjaga harga dasar langganan tetap terjangkau bagi pelaku UMKM di daerah (seperti Tulungagung), sekaligus memberi fleksibilitas ekspansi bagi bisnis jasa, salon, spa, laundry, ekspedisi, maupun ritel:
 
 ### 1. Empat Tingkatan Paket Utama (Core Plans):
-| Nama Paket | Biaya / Bulan | Kapasitas Cabang & Staf | Fitur Unggulan |
+| Nama Paket | Biaya / Bulan | Kapasitas Cabang & Akun | Fitur Unggulan |
 |---|---|---|---|
-| **Free Plan** | Rp 0 (Trial 30 Hari) | 1 Cabang, 1 Kasir, Maks. 20 Menu | Uji coba operasional penuh tanpa komitmen, buka-tutup shift, laporan harian |
-| **Ekonomis UMKM** | Rp 49.000 / bln | 2 Cabang, 3 Staf, Maks. 50 Menu | Transaksi unlimited, stok mutasi, **Program Member & Poin**, **Diskon & Bundling Promo** |
-| **Business Pro** *(Best Seller)* | Rp 129.000 / bln | Hingga 5 Cabang, 10 Staf, Maks. 100 Menu | Kitchen Display System (KDS Live), Standee Meja QR Self-Order, Resep & HPP Otomatis |
-| **Enterprise** | Rp 299.000 / bln | Hingga 10 Cabang, 50 Staf, Maks. 250 Menu | Custom Domain (.com/.id), Centralized Dashboard Multi-Cabang, Konsolidasi Finansial |
+| **Free Plan** | Rp 0 (Trial 30 Hari) | 1 Cabang, 1 Akun, Maks. 20 Menu | Uji coba operasional dasar kasir, batas 50 transaksi, laporan penjualan harian |
+| **Ekonomis UMKM** | Rp 49.000 / bln | 1 Cabang, 2 Akun, Maks. 20 Menu | Maks. 50 transaksi harian, stok inventaris, **Program Member & Poin**, **Diskon & Bundling Promo**, ekspor CSV (tanpa shift kasir) |
+| **Business Pro** *(Best Seller)* | Rp 149.000 / bln | Maks. 2 Cabang, 5 Akun, Maks. 50 Menu | Transaksi unlimited, **Buka-Tutup Shift & Rekonsiliasi Kas**, Resep & HPP Otomatis, Laporan Analitik Multi-Cabang |
+| **Enterprise** | Rp 299.000 / bln | Hingga 10 Cabang, 20 Akun, Maks. 100 Menu | **Kitchen Display System (KDS Kanban)**, Custom Domain (.com/.id), Centralized Dashboard Multi-Cabang, Konsolidasi Finansial, Hak Akses RBAC |
 
 *Catatan: Dukungan bantuan dan batasan cetak struk/WA tidak dicantumkan sebagai pembeda paket. Program loyalitas poin dan bundling promosi diaktifkan langsung mulai dari paket Ekonomis UMKM.*
 
-### 2. Tujuh Plugin Modular Tambahan (Add-on Marketplace):
+### 2. Delapan Plugin Modular Tambahan (Add-on Marketplace):
 | Nama Plugin | Biaya / Bulan | Sektor Sasaran | Kemampuan Utama |
 |---|---|---|---|
 | **Absensi Selfie & Geofencing GPS** | Rp 20.000 | Semua Sektor (F&B, Salon, Ritel) | Foto kamera selfie wajib saat jam masuk/pulang + validasi radius GPS 50m |
@@ -269,6 +269,7 @@ Abdi POS mengimplementasikan arsitektur harga **Core-to-Value + Modular Add-on M
 | **Reservasi & Booking Mandiri Online** | Rp 35.000 | Salon, Barbershop, Spa, Cuci Mobil | Link pemesanan jadwal mandiri untuk pelanggan dari rumah + opsi DP QRIS |
 | **Kas Bon & Piutang Pelanggan** | Rp 15.000 | Toko Kelontong, Warkop, Bengkel | Tombol "Kas Bon" di kasir, limit plafon kredit, riwayat cicilan & pengingat WA |
 | **Catat Biaya Operasional & Laba Bersih** | Rp 29.000 | Semua Sektor Bisnis | Catat arus kas keluar non-HPP (listrik, sewa, gaji) untuk kalkulasi riil Net Profit |
+| **Meja & Standee QR Self-Order** | Rp 30.000 | F&B, Cafe, Resto, Foodcourt | Scan barcode meja untuk order & bayar QRIS mandiri, sinkron langsung ke KDS |
 
 Setiap plugin dilengkapi simulator interaktif (`PluginDemoModal.vue`) untuk pratinjau langsung sebelum berlangganan.
 

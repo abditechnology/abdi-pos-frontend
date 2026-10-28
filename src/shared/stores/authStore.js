@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useToast } from '../composables/useToast'
+import { authService } from '../services/authService'
 
 export const useAuthStore = defineStore('auth', () => {
   const toast = useToast()
@@ -106,8 +107,59 @@ export const useAuthStore = defineStore('auth', () => {
     return user.value.permissions?.includes(permission) || false
   }
 
-  // Action: Login (with demo accounts matching or custom login)
+  // Action: Login (with backend integration + seamless demo fallback)
   const login = async (email, password, remember = false) => {
+    // 1. Try real backend login if available
+    try {
+      const res = await authService.login({
+        email,
+        password,
+        device_name: 'pos-web'
+      })
+
+      if (res?.data?.user) {
+        const beUser = res.data.user
+        user.value = {
+          id: beUser.id,
+          name: beUser.name,
+          email: beUser.email,
+          role: beUser.role?.name || (beUser.tenant_id ? 'Owner & Tenant Admin' : 'Superadmin SaaS Owner'),
+          roleCode: beUser.tenant_id ? 'owner' : 'superadmin',
+          phone: beUser.phone || '0812-3456-7890',
+          address: beUser.address || 'Indonesia',
+          avatar: beUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&h=160&fit=crop&crop=faces',
+          joinDate: beUser.created_at || '10 Agustus 2026',
+          lastPasswordChange: 'Baru saja',
+          assignedOutletId: beUser.outlets?.[0]?.id || 1,
+          assignedOutletName: beUser.outlets?.[0]?.name || 'Outlet Utama',
+          activeSessions: [
+            { id: 1, device: 'Browser Saat Ini', location: 'Jakarta, ID', ip: '127.0.0.1', current: true, time: 'Aktif Sekarang' }
+          ],
+          permissions: beUser.permissions || ['all']
+        }
+
+        if (beUser.tenant) {
+          tenant.value = {
+            id: beUser.tenant.id,
+            name: beUser.tenant.name,
+            slug: beUser.tenant.slug,
+            subdomain: `${beUser.tenant.slug}.abdipos.com`,
+            customDomain: null,
+            plan: 'Business Pro',
+            status: beUser.tenant.status || 'active',
+            currency: beUser.tenant.currency || 'IDR',
+            currencySymbol: 'Rp'
+          }
+        }
+
+        toast.success(`Selamat datang kembali, ${user.value.name}!`, 'Login Berhasil')
+        return user.value
+      }
+    } catch (err) {
+      console.warn('Backend login attempt failed, checking demo accounts:', err.message)
+    }
+
+    // 2. Demo accounts fallback for instant developer/offline testing
     const matched = demoAccounts.find(acc => acc.email.toLowerCase() === email.toLowerCase())
 
     if (matched) {
@@ -158,15 +210,29 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   // Action: Logout
-  const logout = () => {
+  const logout = async () => {
     const prevName = user.value?.name || 'Pengguna'
+    try {
+      await authService.logout()
+    } catch (e) {
+      // Ignore network errors on logout
+    }
     user.value = null
     toast.info(`Anda telah keluar dari akun ${prevName}.`, 'Sesi Berakhir')
   }
 
   // Action: Update Profile Data (CRUD Profile)
-  const updateProfile = (profileData) => {
+  const updateProfile = async (profileData) => {
     if (!user.value) return false
+
+    try {
+      await authService.updateProfile({
+        name: profileData.name,
+        phone: profileData.phone,
+      })
+    } catch (e) {
+      console.warn('Backend updateProfile offline, updated locally.')
+    }
 
     user.value = {
       ...user.value,
@@ -182,8 +248,18 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   // Action: Update Password
-  const changePassword = (currentPassword, newPassword) => {
+  const changePassword = async (currentPassword, newPassword) => {
     if (!user.value) return false
+
+    try {
+      await authService.updatePassword({
+        current_password: currentPassword,
+        password: newPassword,
+        password_confirmation: newPassword,
+      })
+    } catch (e) {
+      console.warn('Backend changePassword offline, updated locally.')
+    }
 
     user.value.lastPasswordChange = new Date().toLocaleDateString('id-ID', {
       day: 'numeric',

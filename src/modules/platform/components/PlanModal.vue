@@ -77,9 +77,9 @@
 
         <BaseInput
           v-model="form.maxStaff"
-          label="Maksimal Staf"
+          label="Maksimal Akun"
           type="number"
-          placeholder="10"
+          placeholder="5"
           :required="true"
         />
 
@@ -103,11 +103,11 @@
           rows="5"
           class="native-textarea"
           placeholder="Contoh:
-Hingga 3 Cabang / Outlet
-Manajemen Inventaris Multi-Cabang
-Diskon, Promo Bundling & Tebus Murah
-Dukungan Custom Domain (.id / .com)
-Laporan Laba/Rugi & Analitik Lengkap"
+            Hingga 3 Cabang / Outlet
+            Manajemen Inventaris Multi-Cabang
+            Diskon, Promo Bundling & Tebus Murah
+            Dukungan Custom Domain (.id / .com)
+            Laporan Laba/Rugi & Analitik Lengkap"
         />
         <span class="help-text">Setiap baris akan ditampilkan sebagai centang hijau di halaman paket langganan.</span>
       </div>

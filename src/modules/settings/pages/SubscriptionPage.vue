@@ -35,7 +35,7 @@
           </div>
           <h2 class="text-3xl font-extrabold">Business Pro</h2>
           <p class="text-blue-100 text-sm mt-1">
-            Biaya Paket Utama: <strong class="text-white font-mono">Rp 129.000 / bulan</strong> •
+            Biaya Paket Utama: <strong class="text-white font-mono">Rp 149.000 / bulan</strong> •
             Periode aktif hingga: <strong class="text-white">25 November 2026</strong>
           </p>
         </div>
@@ -53,33 +53,33 @@
       <BaseCard>
         <span class="text-xs font-semibold text-slate-500 block">Cabang Outlet Aktif</span>
         <div class="flex justify-between items-baseline mt-2">
-          <span class="text-2xl font-bold font-mono text-slate-900">2 / 5</span>
-          <span class="text-xs font-semibold text-blue-600">40% terpakai</span>
+          <span class="text-2xl font-bold font-mono text-slate-900">2 / 2</span>
+          <span class="text-xs font-semibold text-amber-600">100% kuota</span>
         </div>
         <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden">
-          <div class="bg-blue-600 h-1.5 rounded-full" style="width: 40%"></div>
+          <div class="bg-amber-500 h-1.5 rounded-full" style="width: 100%"></div>
         </div>
       </BaseCard>
 
       <BaseCard>
-        <span class="text-xs font-semibold text-slate-500 block">Akun Staf & Kasir</span>
+        <span class="text-xs font-semibold text-slate-500 block">Akun</span>
         <div class="flex justify-between items-baseline mt-2">
-          <span class="text-2xl font-bold font-mono text-slate-900">5 / 10</span>
-          <span class="text-xs font-semibold text-emerald-600">50% terpakai</span>
+          <span class="text-2xl font-bold font-mono text-slate-900">3 / 5</span>
+          <span class="text-xs font-semibold text-emerald-600">60% terpakai</span>
         </div>
         <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden">
-          <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 50%"></div>
+          <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 60%"></div>
         </div>
       </BaseCard>
 
       <BaseCard>
         <span class="text-xs font-semibold text-slate-500 block">Katalog Menu & Jasa</span>
         <div class="flex justify-between items-baseline mt-2">
-          <span class="text-2xl font-bold font-mono text-slate-900">42 / 100</span>
-          <span class="text-xs font-semibold text-purple-600">42% terpakai</span>
+          <span class="text-2xl font-bold font-mono text-slate-900">42 / 50</span>
+          <span class="text-xs font-semibold text-purple-600">84% terpakai</span>
         </div>
         <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden">
-          <div class="bg-purple-500 h-1.5 rounded-full" style="width: 42%"></div>
+          <div class="bg-purple-500 h-1.5 rounded-full" style="width: 84%"></div>
         </div>
       </BaseCard>
 
@@ -222,7 +222,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import BaseCard from '@/shared/components/ui/BaseCard.vue'
 import BaseButton from '@/shared/components/ui/BaseButton.vue'
 import BaseBadge from '@/shared/components/ui/BaseBadge.vue'
@@ -238,13 +238,17 @@ const showUpgradeModal = ref(false)
 const showDemoModal = ref(false)
 const selectedDemoPlugin = ref(null)
 
+onMounted(() => {
+  pluginStore.fetchPlugins()
+})
+
 const invoices = ref([
   {
     id: 'inv-03',
     number: 'INV-SUB-202610-092',
     plan: 'Business Pro Plan (Bulanan)',
     period: '25 Okt 2026 - 25 Nov 2026',
-    amount: 129000,
+    amount: 149000,
     paidDate: '2026-10-25 00:01'
   },
   {
@@ -252,7 +256,7 @@ const invoices = ref([
     number: 'INV-SUB-202609-085',
     plan: 'Business Pro Plan (Bulanan)',
     period: '25 Sep 2026 - 25 Okt 2026',
-    amount: 129000,
+    amount: 149000,
     paidDate: '2026-09-25 00:02'
   },
   {
@@ -260,7 +264,7 @@ const invoices = ref([
     number: 'INV-SUB-202608-011',
     plan: 'Business Pro Plan (Bulanan)',
     period: '25 Agu 2026 - 25 Sep 2026',
-    amount: 129000,
+    amount: 149000,
     paidDate: '2026-08-25 08:30'
   }
 ])

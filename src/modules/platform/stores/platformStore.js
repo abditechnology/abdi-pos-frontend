@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useToast } from '../../../shared/composables/useToast'
+import { subscriptionService } from '../../../shared/services/subscriptionService'
 
 export const usePlatformStore = defineStore('platform', () => {
   const toast = useToast()
@@ -19,10 +20,9 @@ export const usePlatformStore = defineStore('platform', () => {
       maxProducts: 20,
       features: [
         '1 Cabang / Outlet',
-        '1 Akun Staf / Kasir',
+        '1 Akun',
         'Katalog Maksimal 20 Menu',
-        'Transaksi Tanpa Batas (30 Hari)',
-        'Buka-Tutup Shift Kasir',
+        'Maksimal 50 Transaksi Kasir',
         'Laporan Penjualan Dasar',
         'Subdomain (.abdipos.com)'
       ],
@@ -37,17 +37,16 @@ export const usePlatformStore = defineStore('platform', () => {
       badge: 'Paling Terjangkau',
       priceMonthly: 49000,
       priceYearly: 490000,
-      maxOutlets: 2,
-      maxStaff: 3,
-      maxProducts: 50,
+      maxOutlets: 1,
+      maxStaff: 2,
+      maxProducts: 20,
       features: [
-        'Hingga 2 Cabang / Outlet',
-        '3 Akun Staf (1 Owner, 2 Kasir)',
-        'Katalog Maksimal 50 Menu',
-        'Transaksi Tanpa Batas (Unlimited)',
+        '1 Cabang / Outlet',
+        '2 Akun',
+        'Katalog Maksimal 20 Menu',
+        'Maksimal 50 Transaksi Harian',
         'Program Member & Poin Loyalitas',
         'Diskon, Voucher & Bundling Promo',
-        'Buka-Tutup Shift & Rekonsiliasi Kas',
         'Manajemen Stok Inventaris',
         'Ekspor Laporan ke Excel (CSV)'
       ],
@@ -60,21 +59,20 @@ export const usePlatformStore = defineStore('platform', () => {
       code: 'pro',
       name: 'Business Pro',
       badge: 'Best Seller',
-      priceMonthly: 129000,
-      priceYearly: 1290000,
-      maxOutlets: 5,
-      maxStaff: 10,
-      maxProducts: 100,
+      priceMonthly: 149000,
+      priceYearly: 1490000,
+      maxOutlets: 2,
+      maxStaff: 5,
+      maxProducts: 50,
       features: [
-        'Hingga 5 Cabang / Outlet',
-        '10 Akun Staf & Supervisor',
-        'Katalog Maksimal 100 Menu',
-        'Semua Fitur Paket Ekonomis',
-        'Kitchen Display System (KDS Kanban)',
-        'Meja & Standee QR Self-Order',
+        'Maksimal 2 Cabang / Outlet',
+        '5 Akun',
+        'Katalog Maksimal 50 Menu',
+        'Transaksi Tanpa Batas (Unlimited)',
+        'Semua Fitur Paket UMKM',
+        'Buka-Tutup Shift & Rekonsiliasi Kas',
         'Resep Bahan Baku & HPP Otomatis',
-        'Hak Akses Staf Bertingkat (RBAC)',
-        'Laporan Laba/Rugi & Analitik Lengkap'
+        'Laporan Analitik Multi-Cabang'
       ],
       isPopular: true,
       isActive: true,
@@ -88,18 +86,20 @@ export const usePlatformStore = defineStore('platform', () => {
       priceMonthly: 299000,
       priceYearly: 2990000,
       maxOutlets: 10,
-      maxStaff: 50,
-      maxProducts: 250,
+      maxStaff: 20,
+      maxProducts: 100,
       features: [
         'Hingga 10 Cabang / Outlet',
-        '50 Akun Staf & Supervisor',
-        'Katalog Maksimal 250 Menu',
+        '20 Akun',
+        'Katalog Maksimal 100 Menu',
         'Semua Fitur Business Pro',
+        'Kitchen Display System (KDS Kanban)',
         'Multi-Outlet Centralized Dashboard',
         'Mutasi & Transfer Stok Antar-Cabang',
         'Dukungan Custom Domain (.com / .id)',
         'Sertifikat SSL HTTPS Otomatis',
-        'Laporan Finansial Konsolidasi'
+        'Laporan Finansial Konsolidasi',
+        'Hak Akses Tingkat Lanjut (RBAC)'
       ],
       isPopular: false,
       isActive: true,
@@ -531,6 +531,34 @@ export const usePlatformStore = defineStore('platform', () => {
     return true
   }
 
+  const fetchPlatformPlans = async () => {
+    try {
+      const res = await subscriptionService.getPlatformPlans()
+      if (res?.data && Array.isArray(res.data)) {
+        plans.value = res.data.map(p => ({
+          id: p.id,
+          code: p.code,
+          name: p.name,
+          badge: p.is_popular ? 'Paling Populer' : (p.price === 0 ? 'Free' : ''),
+          priceMonthly: Number(p.price) || 0,
+          priceYearly: (Number(p.price) || 0) * 10,
+          maxOutlets: p.limits?.outlet || 1,
+          maxStaff: p.limits?.user || 1,
+          maxProducts: p.limits?.product || 20,
+          features: Object.entries(p.features || {})
+            .filter(([_, enabled]) => Boolean(enabled))
+            .map(([k]) => k.replace(/_/g, ' ')),
+          isPopular: Boolean(p.is_popular),
+          isActive: p.status === 'active',
+          subscriberCount: p.subscriptions_count || 0
+        }))
+      }
+    } catch (e) {
+      console.warn('Backend fetchPlatformPlans offline, using local plans.')
+    }
+    return plans.value
+  }
+
   const getPlanById = (id) => {
     return plans.value.find(p => p.id === id) || { name: 'Unknown Plan', priceMonthly: 0 }
   }
@@ -553,6 +581,7 @@ export const usePlatformStore = defineStore('platform', () => {
     createPlan,
     updatePlan,
     deletePlan,
+    fetchPlatformPlans,
     verifyDomain,
     updateSuperadminProfile,
     updateSuperadminPassword,

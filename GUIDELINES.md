@@ -189,12 +189,12 @@ Buka kelompok menu *PENGATURAN* di sidebar:
    - Subdomain gratis bawaan (misal `abdimartabak.abdipos.com`) selalu aktif dengan sertifikat HTTPS aman.
    - Ingin pakai domain toko sendiri? Klik **"Hubungkan Custom Domain"**, ketik domain Anda (misal `order.tokoanda.com`), lalu ikuti panduan mengarahkan DNS CNAME ke `cname.abdipos.com`.
 3. **Paket Langganan (`/app/subscription`)**:
-   - Menampilkan paket aktif saat ini (**Business Pro — Rp 129.000 / bulan**), pemakaian kuota (cabang, staf kasir, katalog produk, struk transaksi), serta daftar faktur tagihan resmi (PDF).
+   - Menampilkan paket aktif saat ini (**Business Pro — Rp 149.000 / bulan**), pemakaian kuota (cabang, akun, katalog produk, struk transaksi), serta daftar faktur tagihan resmi (PDF).
    - Klik **"Pilihan Paket"** untuk membuka modal komparasi 4 paket resmi Abdi POS:
-     - 🆓 **Free Plan (Rp 0)**: Trial 30 hari penuh, 1 cabang, 1 kasir, maks. 20 menu, shift kasir & laporan harian dasar.
-     - 💡 **Ekonomis UMKM (Rp 49.000 / bln)**: 2 cabang, 3 staf, maks. 50 menu, transaksi tanpa batas, manajemen stok, serta **Program Member & Poin** dan **Diskon & Bundling Promo**.
-     - ⭐ **Business Pro (Rp 129.000 / bln - Best Seller)**: Hingga 5 cabang, 10 staf kasir/supervisor, maks. 100 menu, Kitchen Display System (KDS Kanban), Standee QR Meja Self-Order, Resep & HPP Bahan Baku otomatis, dan laporan laba rugi lengkap.
-     - 🏢 **Enterprise (Rp 299.000 / bln)**: Hingga 10 cabang, 50 akun staf, maks. 250 menu, custom domain toko (.com / .id), transfer stok antar-cabang, dan konsolidasi multi-cabang.
+     - 🆓 **Free Plan (Rp 0)**: Trial 30 hari penuh, 1 cabang, 1 akun, maks. 20 menu, maks. 50 transaksi, laporan harian dasar.
+     - 💡 **Ekonomis UMKM (Rp 49.000 / bln)**: 1 cabang, 2 akun, maks. 20 menu, maks. 50 transaksi harian, manajemen stok, serta **Program Member & Poin** dan **Diskon & Bundling Promo**, ekspor CSV (tanpa fitur buka-tutup shift).
+     - ⭐ **Business Pro (Rp 149.000 / bln - Best Seller)**: Maks. 2 cabang, 5 akun, maks. 50 menu, transaksi unlimited, buka-tutup shift & rekonsiliasi kas, resep bahan baku & kalkulasi HPP otomatis, serta laporan analitik multi-cabang.
+     - 🏢 **Enterprise (Rp 299.000 / bln)**: Hingga 10 cabang, 20 akun, maks. 100 menu, **Kitchen Display System (KDS Kanban)**, custom domain toko (.com / .id), transfer stok antar-cabang, konsolidasi multi-cabang, dan hak akses bertingkat (RBAC).
    - Di halaman ini juga terdapat seksi **"Plugin & Ekstensi Aktif"** yang merangkum add-on tambahan yang sedang terpasang di toko Anda.
 
 ---
@@ -205,7 +205,7 @@ Buka menu **"Plugin & Ekstensi"** (`/app/plugins`):
 
 Abdi POS mengusung konsep **Modular Plugin Architecture**. Pemilik toko salon, barbershop, laundry, bengkel, spa, ekspedisi, maupun ritel tidak perlu membayar biaya paket mahal untuk fitur yang tidak dipakai. Cukup pasang plugin yang dibutuhkan dengan biaya mikro bulanan terjangkau:
 
-### Daftar 7 Plugin Modular Resmi:
+### Daftar 8 Plugin Modular Resmi:
 1. 📸 **Absensi Selfie & Geofencing GPS (Rp 20.000 / bln)**:
    - Jam masuk & pulang (clock in/out) wajib foto selfie wajah dari layar kasir/tablet.
    - Deteksi radius GPS toko otomatis (maksimal 50 meter) untuk mencegah titip absen.
@@ -226,6 +226,8 @@ Abdi POS mengusung konsep **Modular Plugin Architecture**. Pemilik toko salon, b
 7. 📊 **Catat Biaya Operasional & Laba Bersih / Net Profit (Rp 29.000 / bln)**:
    - Catat pengeluaran non-bahan baku seperti listrik PLN, sewa tempat, gaji karyawan, dan kantong kresek.
    - Menghasilkan laporan Laba Bersih riil (*Net Profit*) dan arus kas (*Cash Flow*).
+8. 📱 **Meja & Standee QR Self-Order (Rp 30.000 / bln)**:
+   - Pelanggan scan barcode QR di meja, lihat menu digital, pesan langsung, dan bayar seketika via QRIS tanpa antri kasir. Pesanan otomatis terhubung ke KDS Dapur.
 
 > [!TIP]
 > **Coba Langsung via Simulator Demo Interaktif:**  

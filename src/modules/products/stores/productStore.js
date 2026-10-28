@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useToast } from '../../../shared/composables/useToast'
+import { productService } from '../../../shared/services/productService'
 
 export const useProductStore = defineStore('product', () => {
   const toast = useToast()
@@ -198,9 +199,72 @@ export const useProductStore = defineStore('product', () => {
     return found ? found.name : 'Tanpa Kategori'
   }
 
+  // Asynchronous Backend Fetching
+  const fetchProducts = async (params = {}) => {
+    try {
+      const res = await productService.getProducts(params)
+      if (res?.data && Array.isArray(res.data)) {
+        products.value = res.data.map(p => ({
+          id: p.id,
+          name: p.name,
+          sku: p.sku,
+          categoryId: p.category_id,
+          price: Number(p.price) || 0,
+          costPrice: Number(p.cost_price ?? p.hpp) || 0,
+          stock: Number(p.stock) || 0,
+          unit: p.unit || 'Porsi',
+          image: p.image_url || 'https://images.unsplash.com/photo-1579888944880-d98341245702?w=160&h=160&fit=crop',
+          isActive: Boolean(p.is_active ?? (p.status !== 'inactive')),
+          trackStock: Boolean(p.track_stock ?? true)
+        }))
+      }
+    } catch (e) {
+      console.warn('Backend fetchProducts offline, using local store data:', e.message)
+    }
+    return products.value
+  }
+
+  const fetchCategories = async (params = {}) => {
+    try {
+      const res = await productService.getCategories(params)
+      if (res?.data && Array.isArray(res.data)) {
+        categories.value = res.data.map(c => ({
+          id: c.id,
+          name: c.name,
+          icon: c.icon || 'tag',
+          color: c.color || '#3b82f6',
+          description: c.description || '',
+          itemCount: c.products_count || 0
+        }))
+      }
+    } catch (e) {
+      console.warn('Backend fetchCategories offline, using local store data:', e.message)
+    }
+    return categories.value
+  }
+
   // CRUD Produk
-  const createProduct = (productData) => {
-    const newId = products.value.length ? Math.max(...products.value.map(p => p.id)) + 1 : 101
+  const createProduct = async (productData) => {
+    let createdItem = null
+    try {
+      const res = await productService.createProduct({
+        name: productData.name,
+        sku: productData.sku,
+        category_id: productData.categoryId,
+        price: Number(productData.price) || 0,
+        cost_price: Number(productData.costPrice) || 0,
+        stock: Number(productData.stock) || 0,
+        unit: productData.unit || 'Porsi',
+        is_active: productData.isActive !== false,
+      })
+      if (res?.data?.id) {
+        createdItem = res.data
+      }
+    } catch (e) {
+      console.warn('Backend createProduct offline, stored locally:', e.message)
+    }
+
+    const newId = createdItem?.id || (products.value.length ? Math.max(...products.value.map(p => p.id)) + 1 : 101)
     const newProduct = {
       id: newId,
       name: productData.name,
@@ -224,7 +288,22 @@ export const useProductStore = defineStore('product', () => {
     return newProduct
   }
 
-  const updateProduct = (id, productData) => {
+  const updateProduct = async (id, productData) => {
+    try {
+      await productService.updateProduct(id, {
+        name: productData.name,
+        sku: productData.sku,
+        category_id: productData.categoryId,
+        price: Number(productData.price) || 0,
+        cost_price: Number(productData.costPrice) || 0,
+        stock: Number(productData.stock) || 0,
+        unit: productData.unit || 'Porsi',
+        is_active: productData.isActive !== false,
+      })
+    } catch (e) {
+      console.warn('Backend updateProduct offline, updated locally:', e.message)
+    }
+
     const index = products.value.findIndex(p => p.id === id)
     if (index !== -1) {
       products.value[index] = {
@@ -240,7 +319,13 @@ export const useProductStore = defineStore('product', () => {
     return false
   }
 
-  const deleteProduct = (id) => {
+  const deleteProduct = async (id) => {
+    try {
+      await productService.deleteProduct(id)
+    } catch (e) {
+      console.warn('Backend deleteProduct offline, deleted locally:', e.message)
+    }
+
     const index = products.value.findIndex(p => p.id === id)
     if (index !== -1) {
       const deleted = products.value.splice(index, 1)[0]
@@ -254,8 +339,23 @@ export const useProductStore = defineStore('product', () => {
   }
 
   // CRUD Kategori
-  const createCategory = (catData) => {
-    const newId = categories.value.length ? Math.max(...categories.value.map(c => c.id)) + 1 : 1
+  const createCategory = async (catData) => {
+    let createdCat = null
+    try {
+      const res = await productService.createCategory({
+        name: catData.name,
+        icon: catData.icon || 'tag',
+        color: catData.color || '#3b82f6',
+        description: catData.description || '',
+      })
+      if (res?.data?.id) {
+        createdCat = res.data
+      }
+    } catch (e) {
+      console.warn('Backend createCategory offline, stored locally:', e.message)
+    }
+
+    const newId = createdCat?.id || (categories.value.length ? Math.max(...categories.value.map(c => c.id)) + 1 : 1)
     const newCategory = {
       id: newId,
       name: catData.name,
@@ -269,7 +369,18 @@ export const useProductStore = defineStore('product', () => {
     return newCategory
   }
 
-  const updateCategory = (id, catData) => {
+  const updateCategory = async (id, catData) => {
+    try {
+      await productService.updateCategory(id, {
+        name: catData.name,
+        icon: catData.icon || 'tag',
+        color: catData.color || '#3b82f6',
+        description: catData.description || '',
+      })
+    } catch (e) {
+      console.warn('Backend updateCategory offline, updated locally:', e.message)
+    }
+
     const index = categories.value.findIndex(c => c.id === id)
     if (index !== -1) {
       categories.value[index] = { ...categories.value[index], ...catData }
@@ -279,12 +390,19 @@ export const useProductStore = defineStore('product', () => {
     return false
   }
 
-  const deleteCategory = (id) => {
+  const deleteCategory = async (id) => {
     const hasProducts = products.value.some(p => p.categoryId === id)
     if (hasProducts) {
       toast.error('Tidak dapat menghapus kategori yang masih memiliki produk aktif.', 'Gagal Hapus')
       return false
     }
+
+    try {
+      await productService.deleteCategory(id)
+    } catch (e) {
+      console.warn('Backend deleteCategory offline, deleted locally:', e.message)
+    }
+
     const index = categories.value.findIndex(c => c.id === id)
     if (index !== -1) {
       const deleted = categories.value.splice(index, 1)[0]
@@ -300,6 +418,8 @@ export const useProductStore = defineStore('product', () => {
     totalProducts,
     activeProducts,
     lowStockProducts,
+    fetchProducts,
+    fetchCategories,
     getCategoryName,
     createProduct,
     updateProduct,

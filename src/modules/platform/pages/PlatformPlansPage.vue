@@ -9,7 +9,7 @@
         </div>
         <h1 class="page-title">Paket Langganan & Harga SaaS</h1>
         <p class="page-desc">
-          Atur struktur harga, kuota cabang, batas staf kasir, serta fitur eksklusif yang ditawarkan kepada tenant Abdi POS.
+          Atur struktur harga, kuota cabang, batas akun, serta fitur eksklusif yang ditawarkan kepada tenant Abdi POS.
         </p>
       </div>
 
@@ -61,7 +61,7 @@
           </div>
           <div class="limit-item">
             <AppIcon name="users" :size="16" />
-            <span>Maks <strong>{{ plan.maxStaff }} Akun Staf</strong></span>
+            <span>Maks <strong>{{ plan.maxStaff }} Akun</strong></span>
           </div>
           <div class="limit-item">
             <AppIcon name="package" :size="16" />
@@ -199,7 +199,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { usePlatformStore } from '../stores/platformStore'
 import BaseButton from '../../../shared/components/ui/BaseButton.vue'
 import BaseBadge from '../../../shared/components/ui/BaseBadge.vue'
@@ -208,6 +208,10 @@ import AppIcon from '../../../shared/components/icons/AppIcon.vue'
 import PlanModal from '../components/PlanModal.vue'
 
 const platformStore = usePlatformStore()
+
+onMounted(() => {
+  platformStore.fetchPlatformPlans()
+})
 
 const formatNumber = (num) => new Intl.NumberFormat('id-ID').format(Number(num) || 0)
 

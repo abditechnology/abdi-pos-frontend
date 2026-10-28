@@ -181,7 +181,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import BaseButton from '@/shared/components/ui/BaseButton.vue'
 import BaseBadge from '@/shared/components/ui/BaseBadge.vue'
 import AppIcon from '@/shared/components/icons/AppIcon.vue'
@@ -192,6 +192,10 @@ import { useToast } from '@/shared/composables/useToast'
 const pluginStore = usePluginStore()
 const toast = useToast()
 
+onMounted(() => {
+  pluginStore.fetchPlugins()
+})
+
 const selectedCategory = ref('all')
 const searchQuery = ref('')
 const showDemoModal = ref(false)
@@ -200,6 +204,7 @@ const selectedDemoPlugin = ref(null)
 const categories = [
   { id: 'all', label: 'Semua Kategori' },
   { id: 'hr', label: 'SDM & Karyawan' },
+  { id: 'ordering', label: 'Self-Order & Meja' },
   { id: 'whatsapp', label: 'WhatsApp & Pemasaran' },
   { id: 'service', label: 'Layanan & Booking' },
   { id: 'finance', label: 'Keuangan & Kas Bon' }

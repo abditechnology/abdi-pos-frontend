@@ -144,7 +144,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import BaseCard from '@/shared/components/ui/BaseCard.vue'
 import BaseButton from '@/shared/components/ui/BaseButton.vue'
 import BaseBadge from '@/shared/components/ui/BaseBadge.vue'
@@ -154,6 +154,10 @@ import OutletModal from '../components/OutletModal.vue'
 import { useOutletStore } from '@/shared/stores/outletStore'
 
 const outletStore = useOutletStore()
+
+onMounted(() => {
+  outletStore.fetchOutlets()
+})
 
 const outlets = computed(() => outletStore.outlets)
 const currentOutlet = computed(() => outletStore.currentOutlet)

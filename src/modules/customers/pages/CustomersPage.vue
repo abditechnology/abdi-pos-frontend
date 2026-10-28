@@ -191,7 +191,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import BaseCard from '@/shared/components/ui/BaseCard.vue'
 import BaseButton from '@/shared/components/ui/BaseButton.vue'
 import ConfirmModal from '@/shared/components/ui/ConfirmModal.vue'
@@ -202,6 +202,10 @@ import { useToast } from '@/shared/composables/useToast'
 
 const toast = useToast()
 const customerStore = useCustomerStore()
+
+onMounted(() => {
+  customerStore.fetchCustomers()
+})
 
 const searchQuery = ref('')
 const selectedTier = ref('ALL')

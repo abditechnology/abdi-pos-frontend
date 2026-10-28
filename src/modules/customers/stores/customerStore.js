@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { customerService } from '../../../shared/services/customerService'
 
 export const useCustomerStore = defineStore('customers', () => {
   const customers = ref([
@@ -76,9 +77,48 @@ export const useCustomerStore = defineStore('customers', () => {
   })
 
   // Actions
-  function addCustomer(data) {
+  async function fetchCustomers(params = {}) {
+    try {
+      const res = await customerService.getCustomers(params)
+      if (res?.data && Array.isArray(res.data)) {
+        customers.value = res.data.map(c => ({
+          id: c.id,
+          name: c.name,
+          phone: c.phone,
+          email: c.email,
+          tier: c.tier || 'BRONZE',
+          points: Number(c.points) || 0,
+          totalSpent: Number(c.total_spent) || 0,
+          totalVisits: Number(c.total_visits) || 0,
+          lastVisit: c.last_visit || new Date().toISOString().slice(0, 10),
+          referralCode: c.referral_code || '',
+          notes: c.notes || ''
+        }))
+      }
+    } catch (e) {
+      console.warn('Backend fetchCustomers offline, using local customer data.')
+    }
+    return customers.value
+  }
+
+  async function addCustomer(data) {
+    let created = null
+    try {
+      const res = await customerService.createCustomer({
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        notes: data.notes
+      })
+      if (res?.data?.id) {
+        created = res.data
+      }
+    } catch (e) {
+      console.warn('Backend createCustomer offline, saved locally.')
+    }
+
     const newCust = {
-      id: `cust-${Date.now()}`,
+      id: created?.id || `cust-${Date.now()}`,
       points: Number(data.points) || 0,
       totalSpent: 0,
       totalVisits: 1,
@@ -90,7 +130,18 @@ export const useCustomerStore = defineStore('customers', () => {
     return newCust
   }
 
-  function updateCustomer(id, data) {
+  async function updateCustomer(id, data) {
+    try {
+      await customerService.updateCustomer(id, {
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        notes: data.notes
+      })
+    } catch (e) {
+      console.warn('Backend updateCustomer offline, updated locally.')
+    }
+
     const idx = customers.value.findIndex(c => c.id === id)
     if (idx !== -1) {
       customers.value[idx] = { ...customers.value[idx], ...data }
@@ -99,7 +150,13 @@ export const useCustomerStore = defineStore('customers', () => {
     return null
   }
 
-  function deleteCustomer(id) {
+  async function deleteCustomer(id) {
+    try {
+      await customerService.deleteCustomer(id)
+    } catch (e) {
+      console.warn('Backend deleteCustomer offline, deleted locally.')
+    }
+
     const idx = customers.value.findIndex(c => c.id === id)
     if (idx !== -1) {
       customers.value.splice(idx, 1)
@@ -111,6 +168,7 @@ export const useCustomerStore = defineStore('customers', () => {
   return {
     customers,
     totalPointsCirculating,
+    fetchCustomers,
     addCustomer,
     updateCustomer,
     deleteCustomer

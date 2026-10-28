@@ -283,6 +283,39 @@
         </div>
       </div>
 
+      <!-- 8. SIMULATOR MEJA & STANDEE QR SELF-ORDER -->
+      <div v-else-if="plugin.demoType === 'meja_qr'" class="simulator-card base-card">
+        <h4 class="sim-title">Pratinjau Standee Meja QR & Menu Mandiri</h4>
+        <div class="space-y-3 text-xs">
+          <div class="p-4 bg-orange-50 border border-orange-200 rounded-xl flex items-center gap-4">
+            <div class="w-20 h-20 bg-white border border-orange-300 rounded-lg flex flex-col items-center justify-center p-2 shadow-sm shrink-0">
+              <AppIcon name="qr" :size="48" class="text-slate-800" />
+              <span class="text-[9px] font-bold text-orange-700 mt-1">MEJA #04</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-extrabold text-slate-800 text-sm">Standee QR Meja #04</span>
+                <span class="text-[10px] bg-orange-200 text-orange-900 font-bold px-2 py-0.5 rounded">QRIS Dinamis</span>
+              </div>
+              <p class="text-[11px] text-slate-600 mt-1">
+                Pelanggan duduk di meja, buka kamera HP, scan QR, pilih menu, dan bayar seketika tanpa perlu panggil kasir.
+              </p>
+              <span class="text-[10px] text-emerald-700 font-bold mt-1 inline-block">
+                ✓ Pesanan otomatis masuk ke Kasir POS & Kitchen Display (KDS)
+              </span>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-200 pt-2 flex justify-between items-center">
+            <span class="text-slate-500 text-[11px]">Uji coba alur pemesanan mandiri oleh pelanggan:</span>
+            <BaseButton variant="secondary" size="sm" @click="handleQrSim">
+              <template #icon><AppIcon name="sparkles" :size="14" /></template>
+              Simulasi Pesan via HP
+            </BaseButton>
+          </div>
+        </div>
+      </div>
+
       <!-- Modal Footer -->
       <div class="modal-action-bar flex justify-between items-center pt-4 border-t border-slate-200">
         <div>
@@ -359,6 +392,10 @@ function handleBookingSim() {
 
 function handleRemindKasbon() {
   toast.success('Pesan pengingat kas bon santun berhasil disiapkan via WhatsApp!')
+}
+
+function handleQrSim() {
+  toast.success('Simulasi: Pesanan Meja #04 senilai Rp 85.000 berhasil masuk ke kasir & KDS!')
 }
 </script>
 

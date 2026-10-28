@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { promotionService } from '../../../shared/services/promotionService'
 
 export const usePromotionStore = defineStore('promotions', () => {
   const promotions = ref([
@@ -62,9 +63,53 @@ export const usePromotionStore = defineStore('promotions', () => {
   const totalUsages = computed(() => promotions.value.reduce((sum, p) => sum + p.usageCount, 0))
 
   // Actions
-  function addPromotion(data) {
+  async function fetchPromotions(params = {}) {
+    try {
+      const res = await promotionService.getPromotions(params)
+      if (res?.data && Array.isArray(res.data)) {
+        promotions.value = res.data.map(p => ({
+          id: p.id,
+          code: p.code,
+          title: p.name || p.title,
+          type: p.type || 'PERCENTAGE',
+          discountValue: Number(p.discount_value) || 0,
+          minPurchase: Number(p.min_purchase) || 0,
+          maxDiscount: Number(p.max_discount) || 0,
+          validUntil: p.end_date || p.validUntil,
+          isActive: Boolean(p.is_active ?? true),
+          usageCount: p.usage_count || 0,
+          description: p.description || ''
+        }))
+      }
+    } catch (e) {
+      console.warn('Backend fetchPromotions offline, using local promo data.')
+    }
+    return promotions.value
+  }
+
+  async function addPromotion(data) {
+    let created = null
+    try {
+      const res = await promotionService.createPromotion({
+        name: data.title,
+        code: data.code,
+        type: data.type,
+        discount_value: data.discountValue,
+        min_purchase: data.minPurchase,
+        max_discount: data.maxDiscount,
+        end_date: data.validUntil,
+        description: data.description,
+        is_active: data.isActive
+      })
+      if (res?.data?.id) {
+        created = res.data
+      }
+    } catch (e) {
+      console.warn('Backend createPromotion offline, saved locally.')
+    }
+
     const newPromo = {
-      id: `prm-${Date.now()}`,
+      id: created?.id || `prm-${Date.now()}`,
       usageCount: 0,
       isActive: true,
       ...data
@@ -73,7 +118,23 @@ export const usePromotionStore = defineStore('promotions', () => {
     return newPromo
   }
 
-  function updatePromotion(id, data) {
+  async function updatePromotion(id, data) {
+    try {
+      await promotionService.updatePromotion(id, {
+        name: data.title,
+        code: data.code,
+        type: data.type,
+        discount_value: data.discountValue,
+        min_purchase: data.minPurchase,
+        max_discount: data.maxDiscount,
+        end_date: data.validUntil,
+        description: data.description,
+        is_active: data.isActive
+      })
+    } catch (e) {
+      console.warn('Backend updatePromotion offline, updated locally.')
+    }
+
     const idx = promotions.value.findIndex(p => p.id === id)
     if (idx !== -1) {
       promotions.value[idx] = { ...promotions.value[idx], ...data }
@@ -82,16 +143,27 @@ export const usePromotionStore = defineStore('promotions', () => {
     return null
   }
 
-  function toggleStatus(id) {
+  async function toggleStatus(id) {
     const promo = promotions.value.find(p => p.id === id)
     if (promo) {
       promo.isActive = !promo.isActive
+      try {
+        await promotionService.updatePromotion(id, { is_active: promo.isActive })
+      } catch (e) {
+        // Handled
+      }
       return promo.isActive
     }
     return false
   }
 
-  function deletePromotion(id) {
+  async function deletePromotion(id) {
+    try {
+      await promotionService.deletePromotion(id)
+    } catch (e) {
+      console.warn('Backend deletePromotion offline, deleted locally.')
+    }
+
     const idx = promotions.value.findIndex(p => p.id === id)
     if (idx !== -1) {
       promotions.value.splice(idx, 1)
@@ -104,6 +176,7 @@ export const usePromotionStore = defineStore('promotions', () => {
     promotions,
     activePromotions,
     totalUsages,
+    fetchPromotions,
     addPromotion,
     updatePromotion,
     toggleStatus,

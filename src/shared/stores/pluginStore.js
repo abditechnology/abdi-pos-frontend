@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useToast } from '../composables/useToast'
+import { pluginService } from '../services/pluginService'
 
 export const usePluginStore = defineStore('plugin', () => {
   const toast = useToast()
@@ -166,6 +167,29 @@ export const usePluginStore = defineStore('plugin', () => {
         'Laporan Arus Kas (Cash Flow) bulanan komprehensif'
       ],
       demoType: 'expense'
+    },
+    {
+      id: 'meja_qr',
+      name: 'Meja & Standee QR Self-Order',
+      shortDesc: 'Pelanggan scan barcode QR di meja, pesan menu mandiri & bayar via QRIS tanpa antri kasir.',
+      category: 'ordering',
+      categoryLabel: 'Self-Order & Meja',
+      icon: 'qr',
+      colorClass: 'halo-orange',
+      badgeClass: 'tag-orange',
+      priceMonthly: 30000,
+      isInstalled: false,
+      trialDaysLeft: null,
+      subscriberCount: 15,
+      status: 'active',
+      targetSectors: 'Cafe, Resto, Pujasera, Foodcourt & Warkop',
+      features: [
+        'Generate dan cetak QR Code unik per nomor meja atau standee',
+        'Buku menu digital interaktif dengan foto & opsi kustomisasi',
+        'Pesanan langsung masuk ke Kasir POS & Kitchen Display (KDS)',
+        'Mendukung bayar langsung di awal (QRIS) atau bayar di kasir'
+      ],
+      demoType: 'meja_qr'
     }
   ])
 
@@ -182,7 +206,8 @@ export const usePluginStore = defineStore('plugin', () => {
     { id: 9, pluginId: 'whatsapp_broadcast', tenantName: 'Butik Hijab Cantika', subdomain: 'cantika.abdipos.com', ownerName: 'Nur Hasanah', phone: '0878-1122-3344', installedAt: '03 Oktober 2026', monthlyFee: 25000, status: 'active' },
     { id: 10, pluginId: 'kas_bon', tenantName: 'Toko Kelontong Sumber Rejeki', subdomain: 'sumberrejeki.abdipos.com', ownerName: 'Pak Hadi', phone: '0813-7788-9900', installedAt: '28 September 2026', monthlyFee: 15000, status: 'active' },
     { id: 11, pluginId: 'biaya_operasional', tenantName: 'Martabak & Terang Bulan Nusantara', subdomain: 'martabaknusantara.abdipos.com', ownerName: 'Ahmad Najib', phone: '0812-3456-7890', installedAt: '15 Agustus 2026', monthlyFee: 29000, status: 'active' },
-    { id: 12, pluginId: 'biaya_operasional', tenantName: 'Kopi Kenangan Senja', subdomain: 'kopisenja.abdipos.com', ownerName: 'Fathur Rahman', phone: '0813-9876-1122', installedAt: '01 Juli 2026', monthlyFee: 29000, status: 'active' }
+    { id: 12, pluginId: 'biaya_operasional', tenantName: 'Kopi Kenangan Senja', subdomain: 'kopisenja.abdipos.com', ownerName: 'Fathur Rahman', phone: '0813-9876-1122', installedAt: '01 Juli 2026', monthlyFee: 29000, status: 'active' },
+    { id: 13, pluginId: 'meja_qr', tenantName: 'Kopi Kenangan Senja', subdomain: 'kopisenja.abdipos.com', ownerName: 'Fathur Rahman', phone: '0813-9876-1122', installedAt: '10 Oktober 2026', monthlyFee: 30000, status: 'active' }
   ])
 
   // Computed
@@ -199,7 +224,30 @@ export const usePluginStore = defineStore('plugin', () => {
     return plugins.value.reduce((acc, p) => acc + (p.subscriberCount || 0), 0)
   })
 
-  function togglePlugin(pluginId) {
+  async function fetchPlugins() {
+    try {
+      const res = await pluginService.getTenantPlugins()
+      if (res?.data && Array.isArray(res.data)) {
+        res.data.forEach(bePlugin => {
+          const match = plugins.value.find(p => p.id === bePlugin.id || p.id.replace('_', '-') === bePlugin.id)
+          if (match) {
+            match.isInstalled = Boolean(bePlugin.is_active)
+          }
+        })
+      }
+    } catch (e) {
+      console.warn('Backend fetchPlugins offline, using local plugin data.')
+    }
+  }
+
+  async function togglePlugin(pluginId) {
+    try {
+      const cleanKey = pluginId.replace('_', '-')
+      await pluginService.togglePlugin(cleanKey)
+    } catch (e) {
+      console.warn('Backend togglePlugin offline, toggling locally.')
+    }
+
     const p = plugins.value.find(item => item.id === pluginId)
     if (p) {
       p.isInstalled = !p.isInstalled
@@ -261,6 +309,7 @@ export const usePluginStore = defineStore('plugin', () => {
     totalActiveMonthlyFee,
     totalPluginMRR,
     totalPluginSubscribers,
+    fetchPlugins,
     togglePlugin,
     getPlugin,
     createPlugin,
